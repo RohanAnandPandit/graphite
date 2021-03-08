@@ -11,7 +11,7 @@ class Equation: #Used for plotting graphs
         self.parentWindow = parentWindow
         self.windowOpen = True
 
-        #These are local constants which ma be used in the equation and can be controlled using sliders
+        #These are local constants which may be used in the equation and can be controlled using sliders
         self.a = 1
         self.b = 1
         self.c = 1
@@ -211,56 +211,50 @@ class Equation: #Used for plotting graphs
         # Makes sure that the window opens on top of the Pygame window.
         self.root.attributes('-topmost', True)
         if (x == None):
-            (x,y) = (pygame.mouse.get_pos()[0]+10,pygame.mouse.get_pos()[1]+10)
-        self.root.geometry('300x200+'+str(x)+'+'+str(y))
+            (x,y) = (pygame.mouse.get_pos()[0] + 10, pygame.mouse.get_pos()[1] + 10)
+            
+        #self.root.geometry('300x200+'+str(x)+'+'+str(y))
 
-        self.accuracylabel = Label(self.root, text='step=', font = 'Caibri 10')
-        self.accuracylabel.place(relx = 0.05, rely = 0.65)
+        Label(self.root, text = 'step =', font = 'Caibri 10').grid(column = 1, row = 4)
 
         self.accuracyent = Entry(self.root, width = 5, font = 'Calibri 10')
-        self.accuracyent.place(relx = 0.2, rely = 0.65)
+        self.accuracyent.grid(column = 0, row = 4)
 
 
         if (self.type == 'parametric'):
             self.parentWindow.listOfWindowParametricEquations.append(self)
-            self.xEquationlabel = Label(self.root, text='x=', font = '15')
-            self.xEquationlabel.place(relx = 0.1, rely = 0.1)
+            Label(self.root, text = 'x =', font = 'Calibri 15').grid(column = 0, row = 0)
+            Label(self.root, text = 'y =', font = 'Calibri 15').grid(column = 0, row = 1)
+            Label(self.root, text = 'z =', font = 'Calibri 15').grid(column = 0, row = 2)
 
-            self.yEquationlabel = Label(self.root,text='y=', font = '15')
-            self.yEquationlabel.place(relx = 0.1, rely = 0.25)
 
-            self.zEquationlabel = Label(self.root,text='z=', font = '15')
-            self.zEquationlabel.place(relx = 0.1, rely = 0.4)
+            self.xEquationent = Entry(self.root, font = 'Calibri 15')
+            self.xEquationent.grid(column = 1, row = 0)
 
-            self.xEquationent = Entry(self.root, font = '15')
-            self.xEquationent.place(relx = 0.2, rely = 0.1)
+            self.yEquationent = Entry(self.root, font = 'Calibri 15')
+            self.yEquationent.grid(column = 1, row = 1)
 
-            self.yEquationent = Entry(self.root, font = '15')
-            self.yEquationent.place(relx = 0.2, rely = 0.25)
+            self.zEquationent = Entry(self.root, font = 'Calibri 15')
+            self.zEquationent.grid(column = 1, row = 2)
 
-            self.zEquationent = Entry(self.root, font = '15')
-            self.zEquationent.place(relx = 0.2, rely = 0.4)
-
-            self.apply= Button(self.root, text='Apply',
+            apply = Button(self.root, text='Apply',
                                command = lambda: self.setInfoParametric(self.xEquationent.get(),
                                                                         self.yEquationent.get(),
                                                                         self.zEquationent.get(),
                                                                         self.startValueent.get(),
                                                                         self.endValueent.get(),
                                                                         self.accuracyent.get()))
-            self.apply.place(relx = 0.8, rely = 0.8)
+            apply.grid(column = 5, row = 5)
 
-            self.delete = Button(self.root, text='Delete',
-                                 command = lambda: self.deleteEquation())
-            self.delete.place(relx = 0.1, rely = 0.8)
+            delete = Button(self.root, text='Delete', command = lambda: self.deleteEquation())
+            delete.grid(column = 1, row = 5)
 
 
-            self.close = Button(self.root, text='Close',
-                                command = lambda: self.closeWindow())
-            self.close.place(relx = 0.5, rely = 0.8)
+            close = Button(self.root, text='Close', command = lambda: self.closeWindow())
+            close.grid(column = 2, row = 5)
 
             self.startValueent = Entry(self.root, width = 7, font = 'Calibri 10')
-            self.startValueent.place(relx = 0.4, rely = 0.65)
+            self.startValueent.grid(column = 2, row = 3)
 
             self.endValueent = Entry(self.root, width = 7, font = 'Calibri 10')
             self.endValueent.place(relx = 0.7, rely = 0.65)
@@ -280,11 +274,10 @@ class Equation: #Used for plotting graphs
 
         elif (self.type == 'cartesian'):
             self.parentWindow.listOfWindowCartesianEquations.append(self)
-            self.cartesianEquationlabel = Label(self.root, text='Equation:')
-            self.cartesianEquationlabel.place(relx = 0.1, rely = 0.0)
+            Label(self.root, text='Equation:').grid(column = 0, row = 0)
 
             self.cartesianEquationent = Entry(self.root, font = 'Calibri 15')
-            self.cartesianEquationent.place(relx = 0.1, rely = 0.1)
+            self.cartesianEquationent.grid(column = 0, row = 1)
 
             self.startXent = Entry(self.root, width = 7, font = 'Calibri 12')
             self.startXent.place(relx = 0.2, rely = 0.25)
@@ -298,8 +291,7 @@ class Equation: #Used for plotting graphs
             self.startYent = Entry(self.root, width = 7, font = 'Calibri 12')
             self.startYent.place(relx = 0.2, rely = 0.35)
 
-            self.yrangelabel = Label(self.root, text='≤ y ≤', font = 'Calibri 12')
-            self.yrangelabel.place(relx = 0.4, rely = 0.35)
+            Label(self.root, text='≤ y ≤', font = 'Calibri 12').grid(column = 1, row = 3)
 
             self.endYent = Entry(self.root, width = 7, font = 'Calibri 12')
             self.endYent.place(relx = 0.6, rely = 0.35)
@@ -307,13 +299,12 @@ class Equation: #Used for plotting graphs
             self.startZent = Entry(self.root, width = 7, font = 'Calibri 12')
             self.startZent.place(relx = 0.2, rely = 0.45)
 
-            self.zrangelabel = Label(self.root, text='≤ z ≤', font = 'Calibri 12')
-            self.zrangelabel.place(relx = 0.4, rely = 0.45)
+            Label(self.root, text='≤ z ≤', font = 'Calibri 12').grid(column = 1, row = 4)
 
             self.endZent = Entry(self.root, width = 7, font = 'Calibri 12')
             self.endZent.place(relx = 0.6, rely = 0.45)
 
-            self.apply= Button(self.root, text='Apply',
+            self.apply = Button(self.root, text='Apply',
                                command = lambda: self.setInfoCartesian(self.cartesianEquationent.get(),
                                                                        self.startXent.get(),
                                                                        self.endXent.get(),
@@ -367,7 +358,7 @@ class Equation: #Used for plotting graphs
                 self.parentWindow.listOfSelectedPoints.append(point)# so will the points
         if (self in self.parentWindow.listOfSelectedEquations):
             self.parentWindow.listOfSelectedEquations.remove(self)# Removes any record of the equation
-        self.root.destroy()# Closes window
+        self.root.destroy() # Closes window
 
     # Closes the tkinter window after which the rest of the program will continue to run
     def closeWindow(self):

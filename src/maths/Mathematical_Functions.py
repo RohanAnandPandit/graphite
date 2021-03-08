@@ -3,6 +3,15 @@
 #Therefore by defining the following functions the in-built eval() function will
 # be able to evaluate expressions inputted by the user which use these functions
 #for e.g. ln(y) = arcsin(x)
+import os, sys
+'''
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
+sys.path.append(parentdir)
+'''
+
+from String_Formatting import syntaxCorrection
+
 def ln(x):
     return log(x,e)
 
@@ -156,9 +165,11 @@ def regression(listOfPoints):
     xySum = 0
     for point in listOfPoints:
         xySum += point[0] * point[1]
+        
     xyMean = xySum / len(listOfPoints)
     gradient = (xMean * yMean - xyMean) / (xMean ** 2 - x2Mean)
     yIntercept = yMean - gradient * xMean
+    
     return (gradient, yIntercept)
 
 def integral(function, start2, end2, rule = 'simpsons', equation = None,
@@ -173,7 +184,7 @@ def integral(function, start2, end2, rule = 'simpsons', equation = None,
     end = end2
     function = syntaxCorrection(function)
 
-    if (rule == 'trapezium'):
+    if rule == 'trapezium':
         x = start
         t = start
         area = 0
@@ -195,7 +206,7 @@ def integral(function, start2, end2, rule = 'simpsons', equation = None,
 
         return 0.5 * step * area
 
-    elif (rule == 'simpsons'):
+    elif rule == 'simpsons':
         x = start
         t = start
         i = 0
@@ -208,7 +219,7 @@ def integral(function, start2, end2, rule = 'simpsons', equation = None,
                 if (x == start or x + step > end):
                     area += y
                 elif (i % 2 == 0):
-                    area = area + 2*y
+                    area = area + 2 * y
                 elif (i % 2 == 1):
                     area = area + 4 * y
                 x += step

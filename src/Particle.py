@@ -1,5 +1,8 @@
 from imports import *
 from utils import *
+from utils_1d import *
+from Slider import Slider 
+from math import *
 # Creates a class for the particles that will be on the horizontal surface
 class Particle:
     def __init__(self, velocity, mass, parentWindow, pos = 0): # Initialises the object

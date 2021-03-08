@@ -4,6 +4,9 @@ from Image import Image
 from Slider import Slider
 from utils_1d import *
 import pygame
+from Particle import Particle
+import time
+import sys
 
 class ElasticCollisionsInOneDimension:
     def __init__(self, width, height, screen, parentApp):
@@ -123,7 +126,8 @@ class ElasticCollisionsInOneDimension:
         for slider in self.listOfSliders+self.selectedParticle.listOfSliders:
             if (slider.movePointer):
                 if (slider.x < pygame.mouse.get_pos()[0] < slider.x + slider.width):
-                    slider.pointer.setCor(pygame.mouse.get_pos()[0], slider.pointer.y, slider.pointer.z)
+                    slider.pointer.setCor(pygame.mouse.get_pos()[0],
+                                          slider.pointer.y, slider.pointer.z)
                     slider.pointer.screenPos = (pygame.mouse.get_pos()[0], slider.pointer.y)
                     slider.setVariable()
             if (slider in self.selectedParticle.listOfSliders):
@@ -243,9 +247,10 @@ class ElasticCollisionsInOneDimension:
                 for j in range(0, len(self.listOfParticles)):
                     self.listOfParticles[j].colour = self.particlePlayColour
 
-            # If a particle's position is being controlled by the user then the position xCor of the particle will be the xCor of the mouse
+            # If a particle's position is being controlled by the user then 
+            # the position xCor of the particle will be the xCor of the mouse
             if (particle.moveParticle):
-                if (particle.radius<pygame.mouse.get_pos()[0]<self.width - particle.radius):
+                if (particle.radius<pygame.mouse.get_pos()[0] < self.width - particle.radius):
                     particle.xCor = pygame.mouse.get_pos()[0]
 
             if (i != 0):
@@ -307,7 +312,7 @@ class ElasticCollisionsInOneDimension:
                     particle.root.update()
                     if (i == 4):
                         coord = (particle.root.winfo_x(), particle.root.winfo_y())
-                        pygame.draw.aaline(self.screen, (255,0,0),
+                        pygame.draw.aaline(self.screen, (255, 0, 0),
                                            (particle.xCor, self.yCor-self.radius),
                                            coord, 2)
                 except:
@@ -346,7 +351,7 @@ class ElasticCollisionsInOneDimension:
                 if (particle.xCor + particle.radius >= self.width
                     and particle.velocity > 0):
                     # Reverses the direction to left and multiplies by the elasticity
-                    particle.velocity *= self.wallElasticity * -1
+                    particle.velocity *= -self.wallElasticity
                     particle.colour = particle.particleCollisionColour
             if (i != 0):
                 # This is the particle on the left side of the current particle
@@ -359,19 +364,23 @@ class ElasticCollisionsInOneDimension:
                                                    particle2.velocity,
                                                    particle.mass, particle2.mass,
                                                    self.particleElasticity)
-                    (particle.velocity,particle2.velocity) = (solution[1],solution[0])
+                    (particle.velocity,
+                     particle2.velocity) = (solution[1], solution[0])
                     particle.colour = self.particleCollisionColour
                     particle2.colour = self.particleCollisionColour
 
     def main(self):
         # Fills the self.screen with white to erase the current object
         self.screen.fill(self.bgColour)
-        if (self.reset):
+        if self.reset:
             self.generateDefaultParticles()
             self.reset = False
+            
         self.checkEvents()
         self.updateSliders()
         self.updateParticles()
-        if (self.run):
+        
+        if self.run:
             self.collisionDetection()
+            
         self.updateWindow()

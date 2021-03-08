@@ -91,7 +91,7 @@ class Point: # Used to display individual points on the screen
                 if (p.visible()):
                     p.show(int(self.parentWindow.radius * radiusRatio), False)
 
-    def screenCor(self,x,y):
+    def screenCor(self, x, y):
         x = x + self.width/2
         y = self.height/2 - y
         return (int(x), int(y))
@@ -101,8 +101,8 @@ class Point: # Used to display individual points on the screen
             self.axesTransformation = self.parentWindow.axesTransformation
             screenPos = matrixMultiply(self.axesTransformation, self.posvec)
             screenPos = self.parentWindow.screenCor(screenPos)
-            self.screenPos = (screenPos[0]+self.parentWindow.xTranslation,
-                              screenPos[1]+self.parentWindow.yTranslation)
+            self.screenPos = (screenPos[0] + self.parentWindow.xTranslation,
+                              screenPos[1] + self.parentWindow.yTranslation)
 
     def show(self, radius = None, showLabel = True):
         if (radius == None):
@@ -184,21 +184,24 @@ class Point: # Used to display individual points on the screen
     # Window for Point settings which has Delete, Cancel and Apply buttons
     def window(self, x = None, y = None): # Pointwindow
         self.root = Tk()
+        self.setCurrentWindow()
         self.parentWindow.listOfWindowPoints.append(self)
-
+        self.root.bind('<Enter>', lambda event: self.setCurrentWindow())
+        #self.root.bind('<Leave>', lambda event: self.resetCurrentWindow())
         self.windowOpen = True
         self.root.attributes('-topmost', True) #Makes sure that the window opens on top of the Pygame window.
         self.root.title('Point Properties')
 
         if (x == None):
             (x,y) = (pygame.mouse.get_pos()[0]+10,pygame.mouse.get_pos()[1]+10)
-        self.root.geometry('260x80+'+str(x)+'+'+str(y)) # 'width x height + xcor + ycor'
+            
+        #self.root.geometry('260x80+'+str(x)+'+'+str(y)) # 'width x height + xcor + ycor'
         # User input for the x coordinate of the point
-        self.coordinateslabel = Label(self.root, text='coordinates=')
-        self.coordinateslabel.grid(row = 0, column = 0, columnspan = 2)
+        #self.coordinateslabel = Label(self.root, text='coordinates=')
+        #self.coordinateslabel.grid(row = 0, column = 0, columnspan = 2)
         # User input for the x coordinate of the point
         self.coordinatesent = Entry(self.root, width = 20, font = 'Calibri 15')
-        self.coordinatesent.grid(row = 1, column = 0, columnspan = 4)
+        self.coordinatesent.grid(row = 0, column = 0, columnspan = 5)
 
         if (self.posvec != None):
             print(self.x2)
@@ -230,7 +233,7 @@ class Point: # Used to display individual points on the screen
 
         (Label(self.root, text = 'Label', width = 5)).grid(row = 2, column = 0)
 
-        self.textent = Entry(self.root, width = 5, font = 'Calibri 10')
+        self.textent = Entry(self.root, width = 5, font = 'Calibri 15')
         self.textent.grid(row = 2, column = 1)
         self.textent.insert(0,self.text)
 
@@ -316,3 +319,9 @@ class Point: # Used to display individual points on the screen
         matrix = self.parentWindow.pointTransformation
         posvec = matrixMultiply(matrix,self.posvec)
         self.setCor(posvec[0][0],posvec[1][0],posvec[2][0])
+    
+    def setCurrentWindow(self):
+        self.parentWindow.currentWindow = self.root
+        
+    def resetCurrentWindow(self):
+        self.parentWindow.currentWindow = None

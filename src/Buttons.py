@@ -292,7 +292,7 @@ class Buttons:
             sys.exit()
 
         if (self.title == 'Image'):
-            i = Image(0,0,self.parentWindow.xRotation, self.parentWindow.yRotation,
+            i = Image(0, 0, self.parentWindow.xRotation, self.parentWindow.yRotation,
                       self.parentWindow.zRotation, self.parentWindow)
             i.window() # Creates image object and opens it's window
 

@@ -13,8 +13,8 @@ class Image:
         self.windowOpen = False
 
     def mouseOverImage(self):
-        if (self.x <= pygame.mouse.get_pos()[0] <= self.x+self.width
-            and self.y <= pygame.mouse.get_pos()[1] <= self.y+self.height):
+        if (self.x <= pygame.mouse.get_pos()[0] <= self.x + self.width
+            and self.y <= pygame.mouse.get_pos()[1] <= self.y + self.height):
             return True
         return False
 

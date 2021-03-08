@@ -7,7 +7,7 @@ from Equation import Equation
 from utils import *
 from maths.Transformations import *
 from maths.Matrices import *
-from maths.Mathematical_Functions import regression
+from maths.Mathematical_Functions import *
 from String_Formatting import syntaxCorrection, entryFormatter, substituteValues
 from tkinter import *
 
@@ -169,6 +169,8 @@ class Graph:
         self.showNumberline = False
 
         self.buttonselected = False
+        
+        self.currentWindow = None
 
     def settingsWindow(self):
         self.root = Tk()
@@ -183,7 +185,8 @@ class Graph:
         gradientButton = Checkbutton(self.root,background = 'white',
                                      text = "Gradient colouring", variable = a,
                                      onvalue = True, offvalue = False,
-                                     command = lambda a = a,self = self: exec("self.gradientForTrace = a.get()"))
+                                     command = lambda a = a, 
+                                     self = self: exec("self.gradientForTrace = a.get()"))
         gradientButton.grid(row = 1, column = 0, columnspan = 2)
         if (self.gradientForTrace):
             gradientButton.select()
@@ -193,7 +196,8 @@ class Graph:
         trailButton = Checkbutton(self.root,background = 'white',
                                   text = "Trail effect", variable = b,
                                   onvalue = True, offvalue = False,
-                                  command = lambda b = b,self = self: exec("self.trailEffect = b.get()"))
+                                  command = lambda b = b,
+                                  self = self: exec("self.trailEffect = b.get()"))
         trailButton.grid(row = 2, column = 0)
         if (self.trailEffect):
             trailButton.select()
@@ -202,16 +206,18 @@ class Graph:
         lineButton = Checkbutton(self.root,background = 'white',
                                  text = "Draw lines", variable = c,
                                  onvalue = True, offvalue = False,
-                                 command = lambda c = c,self = self: exec("self.lineForTrace = c.get()"))
+                                 command = lambda c = c, 
+                                 self = self: exec("self.lineForTrace = c.get()"))
         lineButton.grid(row = 3, column = 0)
-        if (self.lineForTrace):
+        if self.lineForTrace:
             lineButton.select()
 
         d = BooleanVar()
         repeatButton = Checkbutton(self.root,background = 'white',
                                    text = "Repeat trace", variable = d,
                                    onvalue = True, offvalue = False,
-                                   command = lambda d = d,self = self: exec("self.repeatTrace = d.get()"))
+                                   command = lambda d = d, 
+                                   self = self: exec("self.repeatTrace = d.get()"))
         repeatButton.grid(row = 4, column = 0)
         if (self.repeatTrace):
             repeatButton.select()
@@ -220,7 +226,8 @@ class Graph:
         numberButton = Checkbutton(self.root,background = 'white',
                                    text = "Numberline", variable = e,
                                    onvalue = True, offvalue = False,
-                                   command = lambda e = e,self = self: exec("self.showNumberline = e.get()"))
+                                   command = lambda e = e, 
+                                   self = self: exec("self.showNumberline = e.get()"))
         numberButton.grid(row = 7, column = 0)
         if (self.showNumberline):
             numberButton.select()
@@ -249,7 +256,7 @@ class Graph:
     def getTransformationMatrix(self, transformation, prop1 = None,
                                 prop2 = None, prop3 = None):
         if (transformation == 'Rotation'):
-            matrix = rotation(prop2,prop1)
+            matrix = rotation(prop2, prop1)
 
         elif (transformation == 'Reflection'):
             matrix = reflection(prop1)
@@ -261,7 +268,11 @@ class Graph:
             matrix  = translation(prop1, prop2, prop3)
 
         elif (transformation == 'RotationAboutLine'):
-            matrix = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]] # Identity matrix
+            matrix = [[1,0,0,0],
+                      [0,1,0,0],
+                      [0,0,1,0],
+                      [0,0,0,1]] # Identity matrix
+            
             for line in self.listOfSelectedLines: # Iterates through all the selected lines
                 # Combines transformations for individual lines by multiplying the matrices
                 matrix = matrixMultiply(matrix, rotationAboutLine(prop2, line))
@@ -269,7 +280,7 @@ class Graph:
 
 
     def setCor(self,x,y,z):
-        (self.x,self.y,self.z) = (round(x,3),round(y,3),round(z,3))
+        (self.x,self.y,self.z) = (round(x,3), round(y,3), round(z,3))
         self.posvec = [[x],[y],[z],[1]]
         self.cor = [x,y,z]
 
@@ -344,7 +355,8 @@ class Graph:
                         self.listOfStrokes = [[]]
                     else:
                         # Deletes latest stroke
-                        del self.listOfStrokes[len(self.listOfStrokes)-1]
+                        del self.listOfStrokes[-1]
+                        
                 if (event.type == pygame.MOUSEBUTTONDOWN):
                     if (event.button == 1):
                         # Only these two buttons work in this mode
@@ -360,8 +372,8 @@ class Graph:
                 if (event.type == pygame.MOUSEMOTION):
                     if (self.collectPoints):
                         # Adds the current position of the mouse to the latest stroke
-                        if(len(self.listOfStrokes) != 0):
-                            self.listOfStrokes[len(self.listOfStrokes)-1].append(pygame.mouse.get_pos())
+                        if len(self.listOfStrokes) != 0:
+                            self.listOfStrokes[-1].append(pygame.mouse.get_pos())
 
                 if (event.type == pygame.MOUSEBUTTONUP):
                     if (event.button == 1):
@@ -395,7 +407,7 @@ class Graph:
 
             for event in self.parentApp.events:
               #This is necessary for the window to close easily
-                if (event.type == pygame.QUIT):
+                if event.type == pygame.QUIT:
                     listOfObjects = self.listOfWindowPoints
                     listOfObjects += self.listOfWindowParametricEquations
                     listOfObjects += self.listOfWindowCartesianEquations
@@ -410,9 +422,9 @@ class Graph:
                     sys.exit()
 
                 # If the user clicks the mouse
-                if (event.type == pygame.MOUSEBUTTONDOWN):
+                if event.type == pygame.MOUSEBUTTONDOWN:
 
-                    if (event.button == 1): # If user left clicks
+                    if event.button == 1: # If user left clicks
 
                         # If the user clicks on a button it's command is initated
                         for button in self.listOfButtons:
@@ -539,7 +551,6 @@ class Graph:
                             if (self.mkey):
                                 self.rotateAxes = True
                                 self.axesRotationMousePos = pygame.mouse.get_pos()
-
                             else:
                                 self.axesTranslationMousePos = pygame.mouse.get_pos()
                                 self.translateAxes = True
@@ -735,7 +746,7 @@ class Graph:
             if (pygame.key.get_pressed()[pygame.K_s]!=0):
                 self.yTranslation += 5
 
-        if ('Scale' in self.activeTransformations):
+        if 'Scale' in self.activeTransformations:
             if (pygame.key.get_pressed()[pygame.K_PERIOD] != 0):
                 self.transformationParametersList.append(['Scale', 1.05, 1, 1])
             if (pygame.key.get_pressed()[pygame.K_COMMA] != 0):
@@ -750,6 +761,7 @@ class Graph:
                 self.transformationParametersList.append(['Scale', 1, 1, 1.05])
             if (pygame.key.get_pressed()[pygame.K_LSHIFT] != 0):
                 self.transformationParametersList.append(['Scale', 1, 1, 0.95])
+                
         else:
             if (pygame.key.get_pressed()[pygame.K_PERIOD] != 0):
                 self.XAxesSf *= 1.05
@@ -789,13 +801,13 @@ class Graph:
     def updatePoints(self):
         for point in self.listOfPoints: # Iterates through all points
             point.calculateScreenPos()
-            if (self.selectionPoint1 != () and point.visible() ): # Checks if point is within the selected region
-                if (min(self.selectionPoint1[0],pygame.mouse.get_pos()[0]) <= point.screenPos[0]
-                    and point.screenPos[0] <= max(self.selectionPoint1[0],pygame.mouse.get_pos()[0])
-                    and min(self.selectionPoint1[1],pygame.mouse.get_pos()[1]) <= point.screenPos[1]
-                    and point.screenPos[1] <= max(self.selectionPoint1[1],pygame.mouse.get_pos()[1])):
+            if self.selectionPoint1 != () and point.visible(): # Checks if point is within the selected region
+                if (min(self.selectionPoint1[0], pygame.mouse.get_pos()[0]) <= point.screenPos[0]
+                    and point.screenPos[0] <= max(self.selectionPoint1[0], pygame.mouse.get_pos()[0])
+                    and min(self.selectionPoint1[1], pygame.mouse.get_pos()[1]) <= point.screenPos[1]
+                    and point.screenPos[1] <= max(self.selectionPoint1[1], pygame.mouse.get_pos()[1])):
 
-                    if (not self.unselect): # If the user is selecting
+                    if not self.unselect: # If the user is selecting
                         # If the point is not already selected
                         if (point not in self.listOfSelectedPoints):
                              self.listOfSelectedPoints.append(point) # it is added to the list
@@ -810,7 +822,7 @@ class Graph:
                             self.tempSelectedPoints.append(point)
 
                 else: # If point not in the region
-                    if (not self.unselect):# If user is selecting
+                    if not self.unselect: # If user is selecting
                         # If the point had been selected in this session
                         if (point in self.tempSelectedPoints):
                             self.listOfSelectedPoints.remove(point)# It is unselected
@@ -823,7 +835,7 @@ class Graph:
                             self.tempSelectedPoints.remove(point)
 
 
-            if (self.showTrace):
+            if self.showTrace:
                 if (self.repeatTrace):
                     listOfCor = []
                 else:
@@ -839,29 +851,33 @@ class Graph:
                         point.listOfTrace.append(p)
 
             if (point in self.listOfSelectedPoints):
-                if ('t' not in syntaxCorrection(point.x2, False)+syntaxCorrection(point.y2,False)+syntaxCorrection(point.z2,False)):
+                if ('t' not in 
+                    syntaxCorrection(point.x2, False)
+                    + syntaxCorrection(point.y2,False)
+                    + syntaxCorrection(point.z2,False)):
                     point.transformPoint()
 
-            if (point.visible()):
+            if point.visible():
                 point.show()
+                
             point.drawTrace()
 
-            if (point.windowOpen):
+            if point.windowOpen:
                 pygame.draw.aaline(self.screen, point.colour, point.screenPos,
                                    (point.root.winfo_x(), point.root.winfo_y()))
 
 
     def updateLines(self):
         for line in self.listOfLines:
-            if (line.visible()):
+            if line.visible():
                 line.drawLine()
 
     def screenCor(self,posvec):
         x = posvec[0][0]
         y = posvec[1][0]
-        x = x + self.width/2
-        y = self.height/2 - y
-        return (int(x),int(y))
+        x = x + self.width / 2
+        y = self.height / 2 - y
+        return (int(x), int(y))
 
     def drawGradientBackground(self):
         # Draws background
@@ -869,7 +885,7 @@ class Graph:
         rectHeight = 10
         height = self.height - rectHeight
 
-        while (height + rectHeight > 0):
+        while height + rectHeight > 0:
             if (colour> 255):
                 break
             pygame.draw.rect(self.screen, (colour,colour,colour),
@@ -880,15 +896,17 @@ class Graph:
     def drawAxes(self):
         for point in self.listOfAxisPoints:
             point.calculateScreenPos()
+            
         self.drawGridLines()
         # Draws the lines representing the axes
-        if (self.showAxes):
-            pygame.draw.aaline(self.screen, (255,0,0), self.x1.screenPos,
+        if self.showAxes:
+            pygame.draw.aaline(self.screen, (255, 0, 0), self.x1.screenPos,
                                self.x2.screenPos, 2)
-            pygame.draw.aaline(self.screen, (0,255,0), self.y1.screenPos,
+            pygame.draw.aaline(self.screen, (0, 255, 0), self.y1.screenPos,
                                self.y2.screenPos, 2)
-            pygame.draw.aaline(self.screen, (0,0,255), self.z1.screenPos,
+            pygame.draw.aaline(self.screen, (0, 0, 255), self.z1.screenPos,
                                self.z2.screenPos, 2)
+            
             #Labels each end of the axes with the required letter
             showText(self.screen, '-X', self.x1.screenPos[0],
                      self.x1.screenPos[1], (0,0,0), (200,200,200), 30)
@@ -896,49 +914,57 @@ class Graph:
                      self.x2.screenPos[1], (0,0,0), (200,200,200), 30)
 
             showText(self.screen,'-Y', self.y1.screenPos[0],
-                     self.y1.screenPos[1], (0,0,0), (200,200,200), 30)
+                     self.y1.screenPos[1], (0, 0, 0), (200, 200, 200), 30)
             showText(self.screen,'+Y', self.y2.screenPos[0],
-                     self.y2.screenPos[1], (0,0,0), (200,200,200), 30)
+                     self.y2.screenPos[1], (0, 0, 0), (200, 200, 200), 30)
 
             if ((self.xRotation, self.yRotation) != (0.0, 0.0)):
                 showText(self.screen,'+Z', self.z1.screenPos[0],
-                         self.z1.screenPos[1], (0,0,0), (200,200,200), 30)
+                         self.z1.screenPos[1], (0, 0, 0), (200, 200, 200), 30)
                 showText(self.screen,'-Z', self.z2.screenPos[0],
-                         self.z2.screenPos[1], (0,0,0), (200,200,200), 30)
+                         self.z2.screenPos[1], (0, 0, 0), (200, 200, 200), 30)
 
     def drawGridLines(self):
         for line in self.listOfGridLines:
-            if (line.visible()):
-                if (self.lightBackground):
+            if line.visible():
+                if self.lightBackground:
                     line.colour = (150,150,150)
                 else:
                     line.colour = (255,255,255)
-                if (self.drawGrid):
+                    
+                if self.drawGrid:
                     line.drawLine(self.showNumberline)
 
     def calculateAxesTransformation(self):
         # Rotates the axis by transforming the axis points by the angle and
         # scale factor required
-        if (self.translateAxes):
+        if self.translateAxes:
             dx = pygame.mouse.get_pos()[0]-self.axesTranslationMousePos[0]
             self.xTranslation = self.prevXTranslation + dx
             dy = pygame.mouse.get_pos()[1]-self.axesTranslationMousePos[1]
             self.yTranslation = self.prevYTranslation + dy
 
 
-        if (self.rotateAxes): # Checks if the axes need to be rotated
-            self.yRotation = (self.prevYRotation + 360*(pygame.mouse.get_pos()[0]-self.axesRotationMousePos[0])/self.width)%360
+        if self.rotateAxes: # Checks if the axes need to be rotated
+            self.yRotation = (self.prevYRotation + 
+                              360 * (pygame.mouse.get_pos()[0] -
+                                     self.axesRotationMousePos[0]) / self.width) % 360
             # This takes the previous angle by which the axes were rotated and then adds the additional angle which is determined by
             #the percentage of the distance between the point that the user pressed the middle button and the current position of the mouse
-            self.xRotation =  (self.prevXRotation + 360*(pygame.mouse.get_pos()[1]-self.axesRotationMousePos[1])/self.width)%360
+            self.xRotation =  (self.prevXRotation + 
+                               360 * (pygame.mouse.get_pos()[1] - 
+                                      self.axesRotationMousePos[1]) / self.width) % 360
             self.twoDMode = False
 
         #self.axesTransformation =  matrixMultiply(scale(self.XAxesSf,self.YAxesSf,self.ZAxesSf),rotation(self.xRotation,'x'))
         self.axesTransformation =  rotation(self.xRotation,'x')
+        
         self.axesTransformation =  matrixMultiply(self.axesTransformation,
                                                   rotation(self.yRotation,'y'))
+        
         self.axesTransformation = matrixMultiply(self.axesTransformation,
                                                  rotation(self.zRotation,'z'))
+        
         self.axesTransformation =  matrixMultiply(self.axesTransformation,
                                                   scale(self.XAxesSf,
                                                         self.YAxesSf,
@@ -948,46 +974,49 @@ class Graph:
     def updateScreen(self):
         basicfont = pygame.font.SysFont('times.ttf', 40) # initialises font for displaying text
 
-        if (self.notes):
+        if self.notes:
             for stroke in self.listOfStrokes:
                 # Draws a 1 pixel circle if stroke is comprised of only one point
-                if (len(stroke) == 1):
+                if len(stroke) == 1:
                     pygame.draw.circle(self.screen, (0,0,0), stroke[0], 1, 0)
-                elif(len(stroke) > 1):
+                
+                elif len(stroke) > 1:
                     # Draws lines between adjecent points
                     for i in range(0,len(stroke)-2):
                         pygame.draw.aaline(self.screen, (0, 0, 0),
-                                           stroke[i], stroke[i+1],1)
+                                           stroke[i], stroke[i+1], 1)
 
         else:
-            if (self.selectionPoint1 != ()):
+            if self.selectionPoint1 != ():
                 self.selectionPoint2 = pygame.mouse.get_pos()
-                if (not self.unselect):
-                    colour = (0,200,0)
+                if not self.unselect:
+                    colour = (0, 200,0)
                 else:
-                    colour = (200,0,0)
+                    colour = (200, 0, 0)
                 self.drawSelectionBox(colour)
 
             self.calculateAxesTransformation()
 
-            if (self.parentApp.numberOfTabs < self.parentApp.maxTabs):
+            if self.parentApp.numberOfTabs < self.parentApp.maxTabs:
                 self.parentApp.newTabButton.showButton()
 
             self.drawAxes()
         # Changes the colour of the transformation buttons that are pressed
 
     def drawSelectionBox(self, colour):
-            width = pygame.mouse.get_pos()[0]-self.selectionPoint1[0]
-            height = pygame.mouse.get_pos()[1]-self.selectionPoint1[1]
+            width = pygame.mouse.get_pos()[0] - self.selectionPoint1[0]
+            height = pygame.mouse.get_pos()[1] - self.selectionPoint1[1]
+            
             pygame.draw.rect(self.screen, colour, (self.selectionPoint1[0],
                                                    self.selectionPoint1[1],
                                                    width, height), 2)
 
     def updateButtons(self):
         for tab in self.parentApp.listOfTabs:
-            if (int(tab.title[1:len(tab.title)]) <= self.parentApp.numberOfTabs):
+            if int(tab.title[1:len(tab.title)]) <= self.parentApp.numberOfTabs:
                 tab.showButton()
-                if (tab.title == self.parentApp.currentTab):
+                
+                if tab.title == self.parentApp.currentTab:
                     tab.fontColour = (200,0,0)
                 else:
                     tab.fontColour = (0,0,0)
@@ -996,20 +1025,21 @@ class Graph:
 
             button.showButton() # Draws button onscreen
 
-            if (button.mouseOverButton()):
+            if button.mouseOverButton():
                 button.hover = True
             else:
                 button.hover = False
-            if (button.hover):
-                if (button.shape == 'rectangle'):
+                
+            if button.hover:
+                if button.shape == 'rectangle':
                     #button.parentWindow.showText(button.text, int(button.x+button.width/2), int(button.y+button.height/2), button.fontColour, button.bgColour, button.fontSize+5)
                     y = button.y+button.height+7*len(button.text.split(','))
-                    showText(self.screen, button.text, int(button.x+button.width/2),
-                             y, (0,0,0), (255,255,255), button.fontSize+5)
+                    showText(self.screen, button.text, int(button.x + button.width / 2),
+                             y, (0, 0, 0), (255, 255, 255), button.fontSize + 5)
 
-                elif (button.shape == 'circle'):
+                elif button.shape == 'circle':
                     showText(button.screen, button.text, button.x, button.y,
-                             button.fontColour, button.bgColour, button.fontSize+5)
+                             button.fontColour, button.bgColour, button.fontSize + 5)
                 #mouseImg = pygame.image.load('Mouse hand.png')
                 #self.screen.blit(mouseImg, pygame.mouse.get_pos())
 
@@ -1025,28 +1055,32 @@ class Graph:
                 button.leftClickCommand()
 
             if (button.mouseOverButton()):
-                button.bgColour = (200,200,200)
+                button.bgColour = (200, 200, 200)
             else:
-                button.bgColour = (255,255,255)
+                button.bgColour = (255, 255, 255)
 
     def updateEquations(self):
         if (self.showLineOfBestFit):
             listOfPoints = []
             xValues = []
             for point in self.listOfSelectedPoints:
-                if (point.z == 0.0): # Extracts all selected points on the x-y plane
+                if point.z == 0.0: # Extracts all selected points on the x-y plane
                     listOfPoints.append(point.cor)
                     xValues.append(point.cor[0])
 
-            if (len(listOfPoints) > 1): # Line has to be for more than one point
+            if len(listOfPoints) > 1: # Line has to be for more than one point
                 line = regression(listOfPoints)
                 (self.lineOfBestFit.a, self.lineOfBestFit.b) = line
                 # Line is drawn across the selected points only
                 (self.lineOfBestFit.startValue,
-                 self.lineOfBestFit.endValue) = (str(min(xValues)), str(max(xValues)))
+                 self.lineOfBestFit.endValue) = (str(min(xValues)),
+                                                str(max(xValues)))
+                
                 self.lineOfBestFit.calculatePoints()
+                
                 for point in self.lineOfBestFit.listOfPoints:
                     point.calculateScreenPos()
+                    
                 self.lineOfBestFit.drawGraph()
 
 
@@ -1058,41 +1092,47 @@ class Graph:
                     if (self.showTrace
                         and equation in self.listOfSelectedEquations):
                         captureTrace = True
-                        if (len(point.listOfTrace) > 0):
-                            if (point.cor == point.listOfTrace[len(point.listOfTrace)-1].cor):
+                        
+                        if len(point.listOfTrace) > 0:
+                            if point.cor == point.listOfTrace[len(point.listOfTrace)-1].cor:
                                 captureTrace = False
-                        if (captureTrace):
+                                
+                        if captureTrace:
                             p = Point(self)
                             p.setCor(point.x,point.y,point.z)
                             point.listOfTrace.append(p)
+                            
                         point.drawTrace()
 
                 equation.drawGraph()
 
         equation = None
 
-        if (len(self.listOfSelectedEquations) > 0):
+        if len(self.listOfSelectedEquations) > 0:
             i = len(self.listOfSelectedEquations)-1
             equation = self.listOfSelectedEquations[i]
+            
             if (equation == self.lineOfBestFit
                 and len(self.listOfSelectedEquations) > 1):
                 equation = self.listOfSelectedEquations[i-1]
 
-        elif (len(self.listOfEquations) == 2):
+        elif len(self.listOfEquations) == 2:
             equation = self.listOfEquations[1]
 
 
         if (equation == self.lineOfBestFit and not self.showLineOfBestFit):
             equation = None
 
-        if (equation != None):
-            if (equation.type  == 'parametric'):
+        if equation != None:
+            if equation.type  == 'parametric':
                 showText2(self.screen,
                           'x = '+substituteValues(equation,equation.xEquation)+' | y = '+substituteValues(equation,equation.yEquation)+' | z = '+substituteValues(equation,equation.zEquation),
-                          self.width/2, self.height-180, equation.colour, (255,255,255), 20)
+                          self.width/2, self.height-180, equation.colour, (255, 255, 255), 20)
             else:
-                showText2(self.screen, equation.cartesianEquation, self.width/2, self.height-180, equation.colour, (255,255,255), 20)
-        if (self.lineOfBestFit.mouseOverGraph()):
+                showText2(self.screen, equation.cartesianEquation, self.width/2,
+                          self.height-180, equation.colour, (255,255,255), 20)
+                
+        if self.lineOfBestFit.mouseOverGraph():
             equation = self.lineOfBestFit
             showText2(self.screen, 'x = '+substituteValues(equation,equation.xEquation)+' | y = '+substituteValues(equation,equation.yEquation)+' | z = '+substituteValues(equation,equation.zEquation),
                       pygame.mouse.get_pos()[0],  pygame.mouse.get_pos()[1],
@@ -1100,9 +1140,10 @@ class Graph:
 
 
     def updateSliders(self):
+        sliderActive = False
         equation = None
         if (len(self.listOfSelectedEquations) > 0):
-            equation = self.listOfSelectedEquations[len(self.listOfSelectedEquations)-1]
+            equation = self.listOfSelectedEquations[-1]
         elif (len(self.listOfEquations) == 2):
             equation = self.listOfEquations[1]
         if (equation == self.lineOfBestFit):
@@ -1111,7 +1152,7 @@ class Graph:
             for slider in equation.listOfSliders:
                 if (equation != None):
                     if (equation.type == 'parametric'):
-                        if (slider.text in ['limit1','limit2']
+                        if (slider.text in ['limit1', 'limit2']
                         and equation.xEquation == 't' and equation.zEquation == '0'):
                             slider.startValue = eval(syntaxCorrection(equation.startValue))
                             slider.endValue = eval(syntaxCorrection(equation.endValue))
@@ -1139,6 +1180,7 @@ class Graph:
                             slider.drawSlider()
 
                 if (slider.movePointer):
+                    sliderActive = True
                     if (slider.x <= pygame.mouse.get_pos()[0] <= slider.x + slider.width):
                         slider.pointer.setCor(pygame.mouse.get_pos()[0], slider.pointer.y, slider.pointer.z)
                         slider.pointer.screenPos = (pygame.mouse.get_pos()[0], slider.pointer.y)
@@ -1147,15 +1189,17 @@ class Graph:
                             equation.calculatePoints()
 
         slider = []
-        if (len(self.listOfSelectedPoints)==1):
+        if (len(self.listOfSelectedPoints) == 1):
             slider = [self.listOfSelectedPoints[0].slider]
-        for slider in self.listOfSliders+slider:
+        for slider in self.listOfSliders + slider:
             slider.drawSlider()
             if (slider.movePointer):
+                sliderActive = True
                 if (slider.x < pygame.mouse.get_pos()[0] < slider.x + slider.width):
                     slider.pointer.setCor(pygame.mouse.get_pos()[0], slider.pointer.y, slider.pointer.z)
                     slider.pointer.screenPos = (pygame.mouse.get_pos()[0], slider.pointer.y)
                     slider.setVariable()
+        return sliderActive
 
     # Updates the windows for different objects and formats the user entries where required
     def updateWindows(self):
@@ -1232,16 +1276,17 @@ class Graph:
 
     # Calls all the methods necessary for the program to function properly
     def main(self):
-        if (not self.buttonsCreated):
+        if not self.buttonsCreated:
             self.createButtons() # Creates the button objects required for the module
             self.buttonsCreated = True
 
-        if (not self.notes):
-            for i in range(0,500): # Updates the windows
+        if not self.notes:
+            for i in range(0, 3000): # Updates the windows
                 self.updateWindows()
 
+
         # Draws appropriate background
-        if (not self.lightBackground):
+        if not self.lightBackground:
             self.drawGradientBackground()
         else:
             self.screen.fill((255,255,255))
@@ -1252,13 +1297,16 @@ class Graph:
 
         self.checkEvents() # Responds to all valid user inputs
 
-        if (not self.notes):
+        if not self.notes:
             self.determineTransformation() # Checks user inputs to identify transformations
             self.updatePoints() # Performs tasks associated with points
             self.updateLines() # Performs tasks associated with lines
             self.updateEquations() # Performs tasks associated with equations
-            self.updateSliders() # Performs tasks associated with sliders
-            self.updateButtons() # Performs tasks associated with buttons
+            if not self.rotateAxes and not self.translateAxes:
+                sliderActive = self.updateSliders() # Performs tasks associated with sliders
+                if not sliderActive:
+                    self.updateButtons() # Performs tasks associated with buttons
+
 
 def calculateGridPoints(x, y, z,stepX, stepY, stepZ, self, x2 = 0, y2 = 0, 
                         z2 = 0, step = 1):

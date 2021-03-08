@@ -1,6 +1,8 @@
 import pygame
 from utils import randomColour
 from tkinter import *
+from Slider import Slider
+from math import sqrt
 
 class Particle2D:
     def __init__(self, x,y, mass, velocity, parentWindow):
@@ -66,7 +68,7 @@ class Particle2D:
         #except:
             #pass
 
-    def setValues(self,velocity,mass):
+    def setValues(self, velocity, mass):
         self.velocity = velocity
         self.mass = mass
 
@@ -104,22 +106,22 @@ class Particle2D:
         self.delete.place(relx = 0.1, rely = 0.75)
 
         self.applyButton = Button(self.root,text='Apply',
-                                  command=lambda:self.valueValidation()) # Changes value of variables
-        self.applyButton.place(relx=0.5,rely=0.75)
+                                  command = lambda:self.valueValidation()) # Changes value of variables
+        self.applyButton.place(relx = 0.5, rely = 0.75)
 
 
     def move(self):
-        self.x += self.velocity[0]*self.parentWindow.speed
-        self.y -= self.velocity[1]*self.parentWindow.speed
+        self.x += self.velocity[0] * self.parentWindow.speed
+        self.y -= self.velocity[1] * self.parentWindow.speed
 
     def draw(self):
         pygame.draw.circle(self.screen, self.colour,
-                           (int(self.x), int(self.y)),self.parentWindow.radius, 0)
+                           (int(self.x), int(self.y)), self.parentWindow.radius, 0)
         pygame.draw.circle(self.screen, (0,0,0),
                            (int(self.x),int(self.y)),self.parentWindow.radius, 1)
         # Drawss lines to represent the components of the particle's velocity
-        pygame.draw.aaline(self.screen, (255-self.colour[0], 255-self.colour[1], 255-self.colour[2]),
-                           (int(self.x),int(self.y)), (int(self.x+10*self.velocity[0]),self.y ), 1)
+        pygame.draw.aaline(self.screen, (255 - self.colour[0], 255 - self.colour[1], 255 - self.colour[2]),
+                           (int(self.x), int(self.y)), (int(self.x + 10*self.velocity[0]), self.y ), 1)
 
         pygame.draw.aaline(self.screen, (255-self.colour[0],255-self.colour[1],255-self.colour[2]),
                            (int(self.x),int(self.y)), (int(self.x),int(self.y-10*self.velocity[1])), 1)

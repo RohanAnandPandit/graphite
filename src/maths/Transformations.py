@@ -1,5 +1,7 @@
-from math import sin, cos, radians
+from math import sin, cos, radians, sqrt
 
+def mag(x, y, z):
+    return sqrt(x ** 2 + y ** 2 + z ** 2)
 # See documentation for how these matrices work
 def rotation(angle, axis):
     angle = radians(angle) # Angles have to be in radians
@@ -29,7 +31,7 @@ def rotationAboutLine(angle, line):
     v = line.point2.cor[1] - line.point1.cor[1]
     w = line.point2.cor[2] - line.point1.cor[2]
 
-    magnitude = mag([u,v,w])
+    magnitude = mag(u, v, w)
     #Unit direction vector
     u = u / magnitude
     v = v / magnitude

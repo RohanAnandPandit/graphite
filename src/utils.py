@@ -1,8 +1,9 @@
 from random import randint
 import pygame
-from tkinter import *
+from tkinter import Tk
 
 fileLocation = "C:/GitHub_Projects/graph3d/images/"
+
 colours = {'white' : (255, 255, 255), 'black' : (0, 0, 0), 'red' : (255, 0, 0),
            'blue' : (0, 0, 255), 'green' : (0, 255, 0)}
 
