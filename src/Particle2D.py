@@ -1,5 +1,5 @@
 import pygame
-from utils import randomColour
+from utils import random_colour
 from tkinter import *
 from Slider import Slider
 from math import sqrt
@@ -14,7 +14,7 @@ class Particle2D:
         self.mass = mass # Its mass
         self.moveParticle = False
         self.particlePauseColour = self.parentWindow.particlePauseColour
-        self.particlePlayColour = randomColour()
+        self.particlePlayColour = random_colour()
         self.particleCollisionColour = self.parentWindow.particleCollisionColour
         self.noOfParticles = self.parentWindow.noOfParticles
         self.listOfParticles = self.parentWindow.listOfParticles
@@ -22,9 +22,9 @@ class Particle2D:
         self.wallElasticity = self.parentWindow.wallElasticity
         self.colour = self.particlePlayColour
         self.waitTime = self.parentWindow.waitTime
-        self.fontColour = self.parentWindow.fontColour
-        self.fontSize = self.parentWindow.fontSize
-        self.fontBg = self.parentWindow.fontBg
+        self.fontColour = self.parentWindow.font_colour
+        self.fontSize = self.parentWindow.font_size
+        self.fontBg = self.parentWindow.font_bg
         self.screen = parentWindow.screen
         self.x = x
         self.y = y

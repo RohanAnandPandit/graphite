@@ -1,111 +1,110 @@
 from Buttons import Buttons
-from ElasticCollisionsInOneDimension import ElasticCollisionsInOneDimension
-from ElasticCollisionsInTwoDimensions import ElasticCollisionsInTwoDimensions
-from Graph import *
+from Graph import Graph
+import utils
+import pygame
+from utils import colours
+import sys
+import pickle
+
 
 # Allows multiple Graph objects to exist simultaneously
 class App:
-    def __init__(self, screen, width, height):
-        colours = {'white': (255, 255, 255), 'black' : (0, 0, 0), 'red' : (255, 0, 0),
-                   'blue' : (0, 0, 255), 'green' : (0, 255, 0)}
-        self.screen = screen
-        (width, height) = self.screen.get_size()
-        (self.width, self.height) = (width, height)
+    def __init__(self, width, height):
+        self.width, self.height = width, height
         self.tabs = {}
-        self.maxTabs = 2
-        self.numberOfTabs = 2
-        self.listOfTabs = []
+        self.max_tabs = 1
+        self.number_of_tabs = 1
+        self.tabs = {}
+        self.events = []
+        self.graphs = {}
+        self.tab_width = 100
+        self.tab_height = 30
+        self.tabs['t0'] = Buttons('t0', 'Graph ', 0, 0,
+                                  self.tab_width, self.tab_height, None, 'rectangle',
+                                  20, colours['black'],
+                                  colours['black'], colours['white'],
+                                  self, '')
 
-        for i in range(self.maxTabs + 1):
-             if (i == 0):
-                 self.listOfTabs.append(Buttons('t'+str(i),'Elastic,Collisions',
-                                                100*i , 0   ,100    ,30     ,None,  'rectangle', 20,
-                                                colours['black'],colours['black'],colours['white'], self,''))
-                 self.tabs['t'+str(i)] = ElasticCollisionsInOneDimension(width, height, self.screen, self)
-             elif (i == 1):
-                 self.listOfTabs.append(Buttons('t'+str(i),'2d,Collisions', 100*i,
-                                                0   ,100    ,30     ,None,  'rectangle',
-                                                20,     colours['black'],colours['black'],colours['white'], self,''))
-                 self.tabs['t'+str(i)] = ElasticCollisionsInTwoDimensions(width, height, self.screen, self)
+        self.graphs['t0'] = Graph(width, height, self)
 
-             else:
-                 self.listOfTabs.append(Buttons('t'+str(i),'Graph ', 100*i , 0,
-                                                100    ,30     ,None,  'rectangle',
-                                                20,     colours['black'],
-                                                colours['black'], colours['white'], self,''))
-                 self.tabs['t'+str(i)] = Graph(width, height, self.screen, self)
-        self.currentTab = 't2'
+        self.current_tab = 't0'
 
-        self.newTabButton = Buttons('New Tab' ,'+', 320, 15 , 100 ,30 , 15,'circle',
-                                    30,colours['black'],colours['black'],
-                                    colours['white'], self,'')
+        self.new_tab_button = Buttons('New Tab', '+', self.tab_width + 20,
+                                      15, self.tab_width, self.tab_height, 15, 'circle',
+                                      30, colours['black'], colours['black'],
+                                      colours['white'], self, '')
+    def get_screen(self):
+        from utils import screen
+        return screen
 
-    def updateTabs(self):
-        while (1): # Program will continue to run unless interrupted
-            self.events = pygame.event.get() # Gets all the keyboard and mouse inputs of the user
-            obj = self.tabs[self.currentTab] # Current object that is being run
-            obj.main() # Runs the main method
-            for tab in self.listOfTabs: # Draws all the buttons representing the tabs
-                if (tab.title == self.currentTab):
-                    tab.fontColour = (255,0,0)
-                else:
-                    tab.fontColour = (0,0,0)
-                tab.showButton()
+    def get_events(self):
+        return self.events
 
-            self.newTabButton.showButton()# Draws button to add new tab
+    def update_tabs(self):
+        while True:  # Program will continue to run unless interrupted
+            self.events = pygame.event.get()  # Gets all the keyboard and mouse inputs of the user
 
-            for event in self.events:
-                if (event.type == pygame.MOUSEBUTTONDOWN):
-                    if (event.button == 1):
-                        for tab in self.listOfTabs:
-                            if (tab.mouseOverButton()):
-                                self.currentTab = tab.title
-                                buttonselected = True
+            obj = self.graphs[self.current_tab]  # Current object that is being run
+            obj.main()  # Runs the main method
 
-                        if self.newTabButton.mouseOverButton():
-                            buttonselected = True
-                            self.newTabButton.x += 100 # Shifts the new tab button to the  right
-                            self.numberOfTabs += 1 # Increments the number of tabs
-                            # Creates new tab with the same object as the current tab
-                            if (type(obj).__name__ == 'Graph'):
-                                # type(object).__name__ returns the name of the
-                                # class of the which the object is an instance of
-                                button = Buttons('t'+str(self.numberOfTabs),
-                                                 'Graph', 100*self.numberOfTabs,
-                                                 0, 100, 30, None, 'rectangle',
-                                                 20, colours['black'],
-                                                 colours['black'],
-                                                 colours['white'], self, '')
-                                self.listOfTabs.append(button)
-                                graph = Graph(self.width, self.height, self.screen, self)
-                                self.tabs['t'+str(self.numberOfTabs)] = graph
+            self.show_tabs()
 
-                            elif (type(obj).__name__ == 'ElasticCollisionsInOneDimension'):
-                                button = Buttons('t'+str(self.numberOfTabs),
-                                                 '1d', 100*self.numberOfTabs, 0,
-                                                 100, 30, None, 'rectangle', 20,
-                                                 colours['black'],
-                                                 colours['black'],
-                                                 colours['white'], self, '')
-                                self.listOfTabs.append(button)
-                                app = ElasticCollisionsInOneDimension(self.width,
-                                                                      self.height,
-                                                                      self.screen,
-                                                                      self)
-                                self.tabs['t'+str(self.numberOfTabs)] = app
-
-                            elif (type(obj).__name__ == 'ElasticCollisionsInTwoDimensions'):
-                                button = Buttons('t'+str(self.numberOfTabs),
-                                                 '2d', 100*self.numberOfTabs, 0,
-                                                 100, 30, None, 'rectangle', 20,
-                                                 colours['black'],
-                                                 colours['black'],
-                                                 colours['white'], self, '')
-                                self.listOfTabs.append(button)
-                                app = ElasticCollisionsInTwoDimensions(self.width,
-                                                                       self.height,
-                                                                       self.screen,
-                                                                       self)
-                                self.tabs['t'+str(self.numberOfTabs)] = app
+            self.check_events(obj)
 
             pygame.display.update()
+
+    def show_tabs(self):
+        for tab in self.tabs.values():  # Draws all the buttons representing the tabs
+            if tab.title == self.current_tab:
+                tab.font_colour = (255, 0, 0)
+            else:
+                tab.font_colour = (0, 0, 0)
+            tab.show_button()
+        self.new_tab_button.show_button()  # Draws button to add new tab
+
+    def check_events(self, obj):
+        for event in self.events:
+            if event.type == pygame.QUIT:
+                self.save_app()
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    for tab in self.tabs.values():
+                        if tab.mouse_over_button():
+                            self.current_tab = tab.title
+                            button_selected = True
+
+                    if self.new_tab_button.mouse_over_button():
+                        button_selected = True
+                        self.new_tab_button.x += self.tab_width  # Shifts the new tab button to the  right
+                        self.number_of_tabs += 1  # Increments the number of tabs
+                        # Creates new tab with the same object as the current tab
+                        if type(obj).__name__ == 'Graph':
+                            # type(object).__name__ returns the name of the
+                            # class of the which the object is an instance of
+                            button = Buttons('t' + str(self.number_of_tabs),
+                                             'Graph', self.tab_width * (self.number_of_tabs - 1),
+                                             0, self.tab_width, self.tab_height, None, 'rectangle',
+                                             20, colours['black'],
+                                             colours['black'],
+                                             colours['white'], self, '')
+                            self.tabs['t' + str(self.number_of_tabs)] = button
+                            graph = Graph(self.width, self.height, self)
+                            self.graphs['t' + str(self.number_of_tabs)] = graph
+
+    def save_app(self):
+        self.events = []
+        file = open(utils.GRAPH_APP, 'wb')
+        self.remove_images()
+        pickle.dump(self, file)
+
+    def remove_images(self):
+        for graph in self.graphs.values():
+            for button in graph.buttons:
+                button.image = None
+
+    def set_images(self):
+        for graph in self.graphs.values():
+            for button in graph.buttons:
+                button.set_image()

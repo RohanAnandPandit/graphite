@@ -4,3 +4,4 @@ src/dist
 src/main.spec
 src/maths/__pycache__/
 .idea
+src/graph_app

@@ -26,10 +26,9 @@ class Particle:
         self.colour = self.particlePlayColour
         self.yCor = self.parentWindow.yCor
         self.waitTime = self.parentWindow.waitTime
-        self.fontColour = self.parentWindow.fontColour
-        self.fontSize = self.parentWindow.fontSize
-        self.fontBg = self.parentWindow.fontBg
-        self.screen = parentWindow.screen
+        self.fontColour = self.parentWindow.font_colour
+        self.fontSize = self.parentWindow.font_size
+        self.fontBg = self.parentWindow.font_bg
         self.listOfSliders = [Slider('mass', 'mass', 500, 40,0, 50,
                                      self.parentWindow, self, 100, 50, '',10),
                               Slider('velocity', 'velocity', 500, 90,-25, 25,
@@ -109,33 +108,33 @@ class Particle:
 
     def showInfo(self, showMass, showVelocity, showKE):
         if (showVelocity):
-            self.showText(str(round(self.velocity,2))+' m/s', self.xCor,
+            self.showText(str(round(self.velocity, 2)) + ' m/s', self.xCor,
                           self.yCor - 2*self.parentWindow.radius - 10,
                           self.fontColour, self.fontBg, self.fontSize) # Text for velocity
         if (showMass):
-            self.showText(str(self.mass)+' kg', self.xCor, self.yCor+20,
+            self.showText(str(self.mass)+' kg', self.xCor, self.yCor + 20,
                           self.fontColour, self.fontBg, self.fontSize) # Text for mass
         if (showKE):
             # Calculates kinetic energy
-            KE = round(0.5 *self.mass*(self.velocity**2),2)
+            KE = round(0.5 * self.mass * (self.velocity ** 2), 2)
 
             # Text for kinetic energy
-            self.showText(str(KE)+' J', self.xCor, self.yCor+40,
+            self.showText(str(KE)+' J', self.xCor, self.yCor + 40,
                           self.fontColour, self.fontBg, self.fontSize)
 
     def draw(self):
         # Draws the circle in the position of the particle.
-        pygame.draw.circle(self.parentWindow.screen, self.colour,
-                           (int(self.xCor), self.yCor-self.parentWindow.radius),
-                           self.parentWindow.radius,0)
+        pygame.draw.circle(self.parentWindow.get_screen(), self.colour,
+                           (int(self.xCor), self.yCor - self.parentWindow.radius),
+                           self.parentWindow.radius, 0)
 
-        if (self == self.parentWindow.selectedParticle):
-            pygame.draw.circle(self.parentWindow.screen, (255,0,0),
+        if self == self.parentWindow.selectedParticle:
+            pygame.draw.circle(self.parentWindow.get_screen(), (255, 0, 0),
                                (int(self.xCor),
-                                self.yCor-self.parentWindow.radius),
-                                self.parentWindow.radius, 2)
+                                self.yCor - self.parentWindow.radius),
+                               self.parentWindow.radius, 2)
         else:
-            pygame.draw.circle(self.parentWindow.screen, (0,0,0),
+            pygame.draw.circle(self.parentWindow.get_screen(), (0, 0, 0),
                                (int(self.xCor),
-                                self.yCor-self.parentWindow.radius),
-                                self.parentWindow.radius,2)
+                                self.yCor - self.parentWindow.radius),
+                               self.parentWindow.radius, 2)

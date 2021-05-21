@@ -19,12 +19,12 @@ class Image:
         return False
 
     def show(self): # Displays image on screen
-        if (self.image != None):
+        if self.image != None:
             screen.blit(self.image,(self.x,self.y))
 
     def setImage(self, file):
-        if (self not in self.parentWindow.listOfImages):
-            self.parentWindow.listOfImages.append(self)
+        if (self not in self.parentWindow.images):
+            self.parentWindow.images.append(self)
         try:
             self.image = pygame.image.load(fileLocation + file + '.jpg')
             (self.width,self.height) = self.image.get_rect().size
@@ -34,7 +34,7 @@ class Image:
 
     def deleteImage(self):
         try:
-            self.parentWindow.listOfImages.remove(self)
+            self.parentWindow.images.remove(self)
         except:
             pass
         self.root.destroy()
@@ -42,7 +42,7 @@ class Image:
     def window(self): # Imagewindow
         self.root = Tk()
         self.windowOpen = True
-        self.parentWindow.listOfWindowImages.append(self)
+        self.parentWindow.image_windows.append(self)
 
         cord = str(pygame.mouse.get_pos()[0]-100)+'+'+str(pygame.mouse.get_pos()[1]+10)
         self.root.geometry('260x60+'+cord)

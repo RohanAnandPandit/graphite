@@ -1,33 +1,33 @@
 from Image import Image
-from utils import randomColour, showText, showText2
+from utils import random_colour, show_multiline_text, show_text
 from maths.Matrices import *
 import pygame
 from math import sqrt
-from tkinter import *
+from tkinter import Label, Button, Entry, Tk
 from random import randint
-from String_Formatting import syntaxCorrection
+from String_Formatting import syntax_correction
 
-class Point: # Used to display individual points on the screen
-    def __init__(self, parentWindow, createSlider = True):
+
+class Point:  # Used to display individual points on the screen
+    def __init__(self, parentWindow, createSlider=True):
         from Buttons import Buttons
 
-        self.parentWindow = parentWindow
+        self.parent_window = parentWindow
         self.cor = ()
-        self.screen = self.parentWindow.screen
 
-        self.posvec = None
+        self.pos_vec = None
         self.radius = None
 
         self.x = None
         self.y = None
         self.z = None
 
-        self.windowOpen = False
+        self.window_open = False
 
         self.radius = 5
-        self.screenPos = None
+        self.screen_pos = None
 
-        self.colour = randomColour()
+        self.colour = random_colour()
         self.equation = None
 
         self.line = None
@@ -37,244 +37,256 @@ class Point: # Used to display individual points on the screen
         self.z2 = ''
 
         self.trace = False
-        self.listOfTrace = []
+        self.trace_points = []
         self.t = 0
 
-        if (createSlider):
+        if createSlider:
             from Slider import Slider
-            self.slider = Slider('t', 't', 5, 100, -10, 10, self.parentWindow,
+            self.slider = Slider('t', 't', 5, 100, -10, 10, self.parent_window,
                                  self, 100, 50, '', 0)
         try:
-            self.axesTransformation = parentWindow.axesTransformation
-            self.width = parentWindow.width
-            self.height = parentWindow.height
+            self.axesTransformation = self.parent_window.axes_transformation
+            self.width = self.parent_window.width
+            self.height = self.parent_window.height
         except:
             pass
 
         self.prevCor = ''
         self.text = ''
 
-    def visible(self): # Checks if point is visible onscreen
-        if (0 <= self.screenPos[0] <= self.parentWindow.width
-            and 0 <= self.screenPos[1] <= self.parentWindow.height):
+    def visible(self):  # Checks if point is visible onscreen
+        if (0 <= self.screen_pos[0] <= self.parent_window.width
+                and 0 <= self.screen_pos[1] <= self.parent_window.height):
             return True
         else:
             return False
 
-    def drawTrace(self):
+    def draw_trace(self):
         # Iterates through all the previous position points
-        for i in range(0,len(self.listOfTrace)):
-            p = self.listOfTrace[i]
-            ratio = (i+1)/len(self.listOfTrace) # Percentage of index
+        for i in range(0, len(self.trace_points)):
+            p = self.trace_points[i]
+            ratio = (i + 1) / len(self.trace_points)  # Percentage of index
 
-            if (self.parentWindow.gradientForTrace):
-                colourRatio = ratio # Percentage of index
-                #colourRatio = 1/(2*(1-e**(-(i+1))))
+            if self.parent_window.gradient_for_trace:
+                colourRatio = ratio  # Percentage of index
+                # colourRatio = 1/(2*(1-e**(-(i+1))))
             else:
                 colourRatio = 1
 
-            if (self.parentWindow.trailEffect):
-                radiusRatio = ratio / 1.0 # Percentage of index
+            if self.parent_window.trail_effect:
+                radiusRatio = ratio / 1.0  # Percentage of index
             else:
                 radiusRatio = 1
 
             p.colour = (int(colourRatio * self.colour[0]),
                         int(colourRatio * self.colour[1]),
-                        int(colourRatio * self.colour[2])) # Sets colour
-            p.calculateScreenPos()
+                        int(colourRatio * self.colour[2]))  # Sets colour
+            p.calculate_screen_pos()
 
-            if (i != 0):
-                # Dars line between adjacent points
-                if (self.parentWindow.lineForTrace):
-                    pygame.draw.aaline(self.parentWindow.screen, (0,0,0),
-                                       self.listOfTrace[i - 1].screenPos,p.screenPos)
-                if (p.visible()):
-                    p.show(int(self.parentWindow.radius * radiusRatio), False)
+            if i != 0:
+                # Draws line between adjacent points
+                if self.parent_window.line_for_trace:
+                    pygame.draw.aaline(self.parent_window.get_screen(), (0, 0, 0),
+                                       self.trace_points[i - 1].screen_pos, p.screen_pos)
+                if p.visible():
+                    p.show(int(self.parent_window.radius * radiusRatio), False)
 
-    def screenCor(self, x, y):
-        x = x + self.width/2
-        y = self.height/2 - y
-        return (int(x), int(y))
+    def screen_cor(self, x, y):
+        x = x + self.width / 2
+        y = self.height / 2 - y
+        return int(x), int(y)
 
-    def calculateScreenPos(self):
-        if (self.posvec != None):
-            self.axesTransformation = self.parentWindow.axesTransformation
-            screenPos = matrixMultiply(self.axesTransformation, self.posvec)
-            screenPos = self.parentWindow.screenCor(screenPos)
-            self.screenPos = (screenPos[0] + self.parentWindow.xTranslation,
-                              screenPos[1] + self.parentWindow.yTranslation)
+    def calculate_screen_pos(self):
+        if self.pos_vec != None:
+            self.axesTransformation = self.parent_window.axes_transformation
+            screen_pos = matrix_multiply(self.axesTransformation, self.pos_vec)
+            screen_pos = self.screen_cor(screen_pos[0][0], screen_pos[1][0])
+            self.screen_pos = (screen_pos[0] + self.parent_window.x_translation,
+                               screen_pos[1] + self.parent_window.y_translation)
 
-    def show(self, radius = None, showLabel = True):
-        if (radius == None):
-            radius = self.parentWindow.radius
+    def show(self, radius=None, showLabel=True):
+        if radius is None:
+            radius = self.parent_window.radius
 
-        #try:
-        if (len(self.parentWindow.listOfSelectedPoints) == 1
-            and self in self.parentWindow.listOfSelectedPoints):
+        # try:
+        if (len(self.parent_window.selected_points) == 1
+                and self in self.parent_window.selected_points):
             t = self.t
         else:
-            t = self.parentWindow.t
-        #except:
-            #pass
+            t = self.parent_window.t
+        # except:
+        # pass
 
-        if (self.parentWindow.brownianMotion
-            and self in self.parentWindow.listOfSelectedPoints):
-            self.setCor(self.x+randint(-self.parentWindow.randomSpeed, self.parentWindow.randomSpeed),
-                        self.y+randint(-self.parentWindow.randomSpeed, self.parentWindow.randomSpeed),
-                        self.z+randint(-self.parentWindow.randomSpeed, self.parentWindow.randomSpeed))
+        if (self.parent_window.brownian_motion
+                and self in self.parent_window.selected_points):
+            self.set_cor(self.x + randint(-self.parent_window.random_speed,
+                                          self.parent_window.random_speed),
+                         self.y + randint(-self.parent_window.random_speed,
+                                          self.parent_window.random_speed),
+                         self.z + randint(-self.parent_window.random_speed,
+                                          self.parent_window.random_speed))
 
-        if ('t' in self.x2):
-            #try:
-            self.setCor(eval(syntaxCorrection(self.x2)),self.y,self.z)
-            #except:
-                #pass
-        if ('t' in self.y2):
+        if 't' in self.x2:
+            # try:
+            self.set_cor(eval(syntaxCorrection(self.x2)), self.y, self.z)
+            # except:
+            # pass
+        if 't' in self.y2:
             try:
-                self.setCor(self.x,eval(syntaxCorrection(self.y2)),self.z)
+                self.set_cor(self.x, eval(syntaxCorrection(self.y2)), self.z)
             except:
                 pass
-        if ('t' in self.z2):
+
+        if 't' in self.z2:
             try:
-                self.setCor(self.x,self.y,eval(syntaxCorrection((self.z2))))
+                self.set_cor(self.x, self.y, eval(syntaxCorrection((self.z2))))
             except:
                 pass
 
-        self.calculateScreenPos()
+        self.calculate_screen_pos()
 
-        if (self.equation != None):
-            if (self.equation.type == 'cartesian'):
-                if (self.equation in self.parentWindow.listOfSelectedEquations):
-                    pygame.draw.circle(self.screen, (255,0,0),self.screenPos,radius+1,0)
-                pygame.draw.circle(self.screen, self.equation.colour,self.screenPos,radius,0)
+        if self.equation is not None:
+            if self.equation.type == 'cartesian':
+                if self.equation in self.parent_window.selected_equations:
+                    pygame.draw.circle(self.parent_window.get_screen(),
+                                       (255, 0, 0), self.screen_pos, radius + 1, 0)
 
-            if (self.mouseOverPoint()):
-                showText2(self.screen,str(self.cor), self.screenPos[0] + int(self.parentWindow.radius*1.2),
-                          self.screenPos[1]+radius+20, (255, 0, 0), (255, 255, 255), 20)
-                pygame.draw.circle(self.screen, self.colour,self.screenPos,radius+1,0)
+                pygame.draw.circle(self.parent_window.get_screen(),
+                                   self.equation.colour, self.screen_pos, radius, 0)
 
-        elif (self.equation == None):
-            text = '('+str(self.x)+', '+str(self.y)+', '+str(self.z)+')'
-            if (self.parentWindow.showCoordinates):
-                showText2(self.screen, text, self.screenPos[0] + radius +20,
-                          self.screenPos[1]+radius+20, (255, 0, 0), (255, 255, 255), 20)
+            if self.mouse_over_point():
+                show_text(self.parent_window.get_screen(), str(self.cor),
+                          self.screen_pos[0] + int(self.parent_window.radius * 1.2),
+                          self.screen_pos[1] + radius + 20, (255, 0, 0), (255, 255, 255), 20)
 
-            if (self in self.parentWindow.listOfSelectedPoints):
-                pygame.draw.circle(self.screen, (255,0,0),self.screenPos,radius+2,0)
-            elif (self in self.parentWindow.listOfPoints):
-                pygame.draw.circle(self.screen, (0,0,0),self.screenPos,radius+2,0)
+                pygame.draw.circle(self.parent_window.get_screen(), self.colour,
+                                   self.screen_pos, radius + 1, 0)
 
-            #pygame.draw.circle(self.screen, (255,255,255),self.screenPos,radius+1,0)
-            pygame.draw.circle(self.screen, self.colour,self.screenPos,radius,0)
-            if (showLabel and self.text != ''):
-                showText(self.screen,self.text, self.screenPos[0],
-                         self.screenPos[1]-radius-15, (255, 0, 0), (255, 255, 255), 25)
+        elif self.equation is None:
+            text = '(' + str(self.x) + ', ' + str(self.y) + ', ' + str(self.z) + ')'
+            if self.parent_window.show_coordinates:
+                show_text(self.parent_window.get_screen(), text,
+                          self.screen_pos[0] + radius + 20, self.screen_pos[1] + radius + 20,
+                          (255, 0, 0), (255, 255, 255), 20)
 
-    def mouseOverPoint(self):
-        if (self.screenPos != None):
-            dx = self.screenPos[0] - pygame.mouse.get_pos()[0]
-            dy = self.screenPos[1] - pygame.mouse.get_pos()[1]
-            if (sqrt(dx**2 + dy**2) <= self.parentWindow.radius):
+            if self in self.parent_window.selected_points:
+                pygame.draw.circle(self.parent_window.get_screen(), (255, 0, 0),
+                                   self.screen_pos, radius + 2, 0)
+            elif self in self.parent_window.points:
+                pygame.draw.circle(self.parent_window.get_screen(), (0, 0, 0),
+                                   self.screen_pos, radius + 2, 0)
+
+            # pygame.draw.circle(self.parent_window.getScreen(), (255,255,255),self.screenPos,radius+1,0)
+            pygame.draw.circle(self.parent_window.get_screen(), self.colour,
+                               self.screen_pos, radius, 0)
+            if showLabel and self.text != '':
+                show_multiline_text(self.parent_window.get_screen(), self.text, self.screen_pos[0],
+                                    self.screen_pos[1] - radius - 15, (255, 0, 0), (255, 255, 255), 25)
+
+    def mouse_over_point(self):
+        if self.screen_pos is not None:
+            dx = self.screen_pos[0] - pygame.mouse.get_pos()[0]
+            dy = self.screen_pos[1] - pygame.mouse.get_pos()[1]
+            if sqrt(dx ** 2 + dy ** 2) <= self.parent_window.radius:
                 return True
+
             return False
 
-    def closeWindow(self):
+    def close_window(self):
         self.root.destroy()
-        self.windowOpen = False
+        self.window_open = False
 
     # Window for Point settings which has Delete, Cancel and Apply buttons
-    def window(self, x = None, y = None): # Pointwindow
+    def window(self, x=None, y=None):  # Pointwindow
         self.root = Tk()
-        self.setCurrentWindow()
-        self.parentWindow.listOfWindowPoints.append(self)
-        self.root.bind('<Enter>', lambda event: self.setCurrentWindow())
-        #self.root.bind('<Leave>', lambda event: self.resetCurrentWindow())
-        self.windowOpen = True
-        self.root.attributes('-topmost', True) #Makes sure that the window opens on top of the Pygame window.
+        self.set_current_window()
+        self.parent_window.point_windows.append(self)
+        self.root.bind('<Enter>', lambda event: self.set_current_window())
+        # self.root.bind('<Leave>', lambda event: self.resetCurrentWindow())
+        self.window_open = True
+        self.root.attributes('-topmost', True)  # Makes sure that the window opens on top of the Pygame window.
         self.root.title('Point Properties')
 
-        if (x == None):
-            (x,y) = (pygame.mouse.get_pos()[0]+10,pygame.mouse.get_pos()[1]+10)
-            
-        #self.root.geometry('260x80+'+str(x)+'+'+str(y)) # 'width x height + xcor + ycor'
-        # User input for the x coordinate of the point
-        #self.coordinateslabel = Label(self.root, text='coordinates=')
-        #self.coordinateslabel.grid(row = 0, column = 0, columnspan = 2)
-        # User input for the x coordinate of the point
-        self.coordinatesent = Entry(self.root, width = 20, font = 'Calibri 15')
-        self.coordinatesent.grid(row = 0, column = 0, columnspan = 5)
+        if x is None:
+            (x, y) = (pygame.mouse.get_pos()[0] + 10, pygame.mouse.get_pos()[1] + 10)
 
-        if (self.posvec != None):
-            print(self.x2)
-            if ('t' in self.x2 or (self.y2 or self.x2 or self.z2)):
+        # self.root.geometry('260x80+'+str(x)+'+'+str(y)) # 'width x height + xcor + ycor'
+        # User input for the x coordinate of the point
+        # self.coordinateslabel = Label(self.root, text='coordinates=')
+        # self.coordinateslabel.grid(row = 0, column = 0, columnspan = 2)
+        # User input for the x coordinate of the point
+        self.coordinatesent = Entry(self.root, width=20, font='Calibri 15')
+        self.coordinatesent.grid(row=0, column=0, columnspan=5)
+
+        if self.pos_vec is not None:
+            if 't' in self.x2 or (self.y2 or self.x2 or self.z2):
                 self.coordinatesent.insert(0, self.x2)
             else:
-                self.coordinatesent.insert(0, str(self.posvec[0][0]))
+                self.coordinatesent.insert(0, str(self.pos_vec[0][0]))
 
-            if ('t' in (self.y2 or self.x2 or self.z2)):
-                self.coordinatesent.insert(len(self.coordinatesent.get()), '|'+self.y2)
+            if 't' in (self.y2 or self.x2 or self.z2):
+                self.coordinatesent.insert(len(self.coordinatesent.get()), '|' + self.y2)
             else:
-                self.coordinatesent.insert(len(self.coordinatesent.get()), ','+str(self.posvec[1][0]))
+                self.coordinatesent.insert(len(self.coordinatesent.get()), ',' + str(self.pos_vec[1][0]))
 
-            if ('t' in (self.y2 or self.x2 or self.z2)):
-                self.coordinatesent.insert(len(self.coordinatesent.get()), '|'+self.z2)
+            if 't' in (self.y2 or self.x2 or self.z2):
+                self.coordinatesent.insert(len(self.coordinatesent.get()), '|' + self.z2)
             else:
-                self.coordinatesent.insert(len(self.coordinatesent.get()), ','+str(self.posvec[2][0]))
+                self.coordinatesent.insert(len(self.coordinatesent.get()), ',' + str(self.pos_vec[2][0]))
 
-        self.apply = Button(self.root,text='Apply',command = lambda: self.corValidation())
+        self.apply = Button(self.root, text='Apply', command=lambda: self.cor_validation())
         # This button will effectively create the point (if the user inputs are valid)
-        self.apply.grid(row = 2, column = 2)
+        self.apply.grid(row=2, column=2)
 
-        self.applyAndNew = Button(self.root, text = 'Apply and New', command = lambda: self.corValidation(True))
+        self.applyAndNew = Button(self.root, text='Apply and New', command=lambda: self.cor_validation(True))
         # This button will effectively create the point (if the user inputs are valid)
-        self.applyAndNew.grid(row = 2, column = 3, columnspan = 2)
+        self.applyAndNew.grid(row=2, column=3, columnspan=2)
 
-        self.delete = Button(self.root, text = 'Delete', command = lambda: self.deletePoint())
-        self.delete.grid(row = 2, column = 5)
+        self.delete = Button(self.root, text='Delete', command=lambda: self.delete_point())
+        self.delete.grid(row=2, column=5)
 
-        (Label(self.root, text = 'Label', width = 5)).grid(row = 2, column = 0)
+        Label(self.root, text='Label', width=5).grid(row=2, column=0)
 
-        self.textent = Entry(self.root, width = 5, font = 'Calibri 15')
-        self.textent.grid(row = 2, column = 1)
-        self.textent.insert(0,self.text)
+        self.textent = Entry(self.root, width=5, font='Calibri 15')
+        self.textent.grid(row=2, column=1)
+        self.textent.insert(0, self.text)
 
-    def traceSetting(self):
-        if (self.trace):
+    def trace_setting(self):
+        if self.trace:
             self.trace = False
-            self.traceButton.config(text = 'Show Trace')
+            self.traceButton.config(text='Show Trace')
         else:
             self.trace = True
-            self.traceButton.config(text = 'No Trace')
+            self.traceButton.config(text='No Trace')
 
-    def deletePoint(self):
-        if (self in self.parentWindow.listOfPoints):
-            self.parentWindow.listOfPoints.remove(self)
+    def delete_point(self):
+        if self in self.parent_window.points:
+            self.parent_window.points.remove(self)
 
-        if (self in self.parentWindow.listOfSelectedPoints):
-            self.parentWindow.listOfSelectedPoints.remove(self)
+        if self in self.parent_window.selected_points:
+            self.parent_window.selected_points.remove(self)
         #  Deletes all lines which have itself as a point
-        for line in self.parentWindow.listOfLines:
-            if (self in [line.point1, line.point2]):
-                self.parentWindow.listOfLines.remove(line)
-                if (line in self.parentWindow.listOfSelectedLines):
-                    self.parentWindow.listOfSelectedLines.remove(line)
+        for line in self.parent_window.lines:
+            if self in [line.point1, line.point2]:
+                self.parent_window.lines.remove(line)
+                if line in self.parent_window.selected_lines:
+                    self.parent_window.selected_lines.remove(line)
         try:
             self.root.destroy()
         except:
             pass
 
-
     # To check if the coordinates entered by the user are valid
-    def corValidation(self, newPoint = False):
-        validCor = True
-        if (self in self.parentWindow.listOfSelectedPoints
-            and len(self.parentWindow.listOfSelectedPoints) == 1):
+    def cor_validation(self, newPoint=False):
+        valid_cor = True
+        if (self in self.parent_window.selected_points
+                and len(self.parent_window.selected_points) == 1):
             t = self.t
         else:
-            t = self.parentWindow.t
-        if ('t' in self.coordinatesent.get()):
-            cor = self.coordinatesent.get().split('|')
-        elif ('t' not in self.coordinatesent.get()):
-            cor = self.coordinatesent.get().split(',')
+            t = self.parent_window.t
+
+
+        cor = self.coordinatesent.get().split(',')
 
         try:
             # The coordinates need to be integers because the pixels cannot
@@ -282,46 +294,41 @@ class Point: # Used to display individual points on the screen
             x = round(float(eval(syntaxCorrection(cor[0]))), 2)
             y = round(float(eval(syntaxCorrection(cor[1]))), 2)
             z = round(float(eval(syntaxCorrection(cor[2]))), 2)
-        except :
-            validCor = False
-            
-        if (validCor):
-            #if (self.x2 != self.xent.get() or self.y2 != self.yent.get()
-            # or self.z2 != self.zent.get()):
-            #print(self.yent.get())
+        except:
+            valid_cor = False
 
-            (self.x2,self.y2,self.z2) = tuple(cor)
-            print((self.x2,self.y2,self.z2))
-            self.setCor(x,y,z)
+        if valid_cor:
 
-            self.listOfTrace = []
+            (self.x2, self.y2, self.z2) = tuple(cor)
+            print((self.x2, self.y2, self.z2))
+            self.set_cor(x, y, z)
 
-            if (self not in self.parentWindow.listOfPoints):
-                self.parentWindow.listOfPoints.append(self)
+            self.trace_points = []
 
-            if (newPoint):
-                p = Point(self.parentWindow)
-                p.window(self.root.winfo_x(),self.root.winfo_y())
+            if self not in self.parent_window.points:
+                self.parent_window.points.append(self)
+
+            if newPoint:
+                p = Point(self.parent_window)
+                p.window(self.root.winfo_x(), self.root.winfo_y())
 
             self.text = self.textent.get()
-            self.closeWindow()
+            self.close_window()
 
-    def setCor(self,x,y,z):
-        (self.x,self.y,self.z) = (round(x,3),round(y,3),round(z,3))
-        self.posvec = [[x],[y],[z],[1]]
-        self.cor = (round(x,3),round(y,3),round(z,3))
-        #(self.x2,self.y2,self.z2) = (str(x),str(y),str(z))
-
+    def set_cor(self, x, y, z):
+        (self.x, self.y, self.z) = (round(x, 3), round(y, 3), round(z, 3))
+        self.pos_vec = [[x], [y], [z], [1]]
+        self.cor = (round(x, 3), round(y, 3), round(z, 3))
+        # (self.x2,self.y2,self.z2) = (str(x),str(y),str(z))
 
     # Takes the relevant information, gets the required transformation matrix
     # and transforms the point
-    def transformPoint(self):
-        matrix = self.parentWindow.pointTransformation
-        posvec = matrixMultiply(matrix,self.posvec)
-        self.setCor(posvec[0][0],posvec[1][0],posvec[2][0])
-    
-    def setCurrentWindow(self):
-        self.parentWindow.currentWindow = self.root
-        
-    def resetCurrentWindow(self):
-        self.parentWindow.currentWindow = None
+    def transform_point(self, matrix):
+        pos_vec = matrix_multiply(matrix, self.pos_vec)
+        self.set_cor(pos_vec[0][0], pos_vec[1][0], pos_vec[2][0])
+
+    def set_current_window(self):
+        self.parent_window.current_window = self.root
+
+    def reset_current_window(self):
+        self.parent_window.current_window = None

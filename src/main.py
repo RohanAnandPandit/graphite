@@ -1,17 +1,25 @@
 from App import App
 import os
 import pygame
-pygame.init()
 import ctypes
-from utils import windowSize
+from utils import window_size, set_screen, GRAPH_APP
+import pickle
+pygame.init()
+
 
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
-os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (2, 50) 
- 
-width, height = windowSize()
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (2, 50)
+
+width, height = window_size()
 
 # Only one pygame window can be used by all the different tabs
-screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption('Graph3D')
-app = App(screen, width, height) # Application object
-app.updateTabs() # Starts the main program
+set_screen((3000, 1600))
+pygame.display.set_caption('Graphite')
+try:
+    file = open(GRAPH_APP, 'rb')
+    app = pickle.load(file)
+    app.set_images()
+except (FileNotFoundError, EOFError):
+    app = App(width, height)  # Application object
+
+app.update_tabs()  # Starts the main program
