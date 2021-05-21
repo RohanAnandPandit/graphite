@@ -1,0 +1,6 @@
+src/__pycache__/
+src/*.zip
+src/dist
+src/main.spec
+src/maths/__pycache__/
+.idea
