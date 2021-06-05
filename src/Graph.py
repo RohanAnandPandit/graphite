@@ -10,7 +10,7 @@ from maths.Matrices import *
 from maths.Mathematical_Functions import *
 from maths.Mathematical_Constants import *
 from math import pi
-from String_Formatting import syntax_correction, entry_formatter, substitute_values
+from StringFormatting import syntax_correction, entry_formatter, substitute_values
 from tkinter import *
 import utils
 import pygame
@@ -163,14 +163,14 @@ class Graph:
 
         self.point_windows = []
         self.parametric_equation_windows = []
-        self.artesian_equations_windows = []
+        self.cartesian_equations_windows = []
         self.slider_windows = []
         self.image_windows = []
 
         self.line_of_best_fit = Equation(self, 'parametric')
-        (self.line_of_best_fit.xEquation,
-         self.line_of_best_fit.yEquation,
-         self.line_of_best_fit.zEquation) = ('t', 'at+b', '0')
+        (self.line_of_best_fit.x_equation,
+         self.line_of_best_fit.y_equation,
+         self.line_of_best_fit.z_equation) = ('t', 'at+b', '0')
         self.show_line_of_best_fit = False
 
         self.show_number_line = False
@@ -184,31 +184,32 @@ class Graph:
         self.show_yz_axes = True
 
         self.two_d_mode = False
+        self.settings_window = None
 
     def get_screen(self):
         return utils.screen
 
-    def settings_window(self):
-        self.root = Tk()
-        self.root.title('Settings')
-        self.root.geometry('220x200+' + str(int(self.width / 2)) + '+' + str(int(0)))
-        self.root.attributes('-topmost', True)
+    def create_settings_window(self):
+        self.settings_window = Tk()
+        self.settings_window.title('Settings')
+        self.settings_window.geometry('400x500+' + str(int(self.width / 2)) + '+' + str(int(0)))
+        self.settings_window.attributes('-topmost', True)
 
-        trace_label = Label(self.root, text="Trace Settings")
+        trace_label = Label(self.settings_window, text="Trace Settings")
         trace_label.grid(row=0, column=0)
 
         a = BooleanVar()
-        gradient_button = Checkbutton(self.root, background='white',
+        gradient_button = Checkbutton(self.settings_window, background='white',
                                       text="Gradient colouring", variable=a,
                                       onvalue=True, offvalue=False,
                                       command=lambda a=a,
                                                      self=self: exec("self.gradient_for_trace = a.get()"))
-        gradient_button.grid(row=1, column=0, columnspan=2)
+        gradient_button.grid(row=1, column=0)
         if self.gradient_for_trace:
             gradient_button.select()
 
         b = BooleanVar()
-        trail_button = Checkbutton(self.root, background='white',
+        trail_button = Checkbutton(self.settings_window, background='white',
                                    text="Trail effect", variable=b,
                                    onvalue=True, offvalue=False,
                                    command=lambda b=b,
@@ -218,7 +219,7 @@ class Graph:
             trail_button.select()
 
         c = BooleanVar()
-        line_button = Checkbutton(self.root, background='white',
+        line_button = Checkbutton(self.settings_window, background='white',
                                   text="Draw lines", variable=c,
                                   onvalue=True, offvalue=False,
                                   command=lambda c=c,
@@ -228,7 +229,7 @@ class Graph:
             line_button.select()
 
         d = BooleanVar()
-        repeat_button = Checkbutton(self.root, background='white',
+        repeat_button = Checkbutton(self.settings_window, background='white',
                                     text="Repeat trace", variable=d,
                                     onvalue=True, offvalue=False,
                                     command=lambda d=d,
@@ -237,9 +238,9 @@ class Graph:
         if self.repeat_trace:
             repeat_button.select()
 
-        Label(self.root, text="Other").grid(row=6, column=0)
+        Label(self.settings_window, text="Other").grid(row=6, column=0)
         e = BooleanVar()
-        number_button = Checkbutton(self.root, background='white',
+        number_button = Checkbutton(self.settings_window, background='white',
                                     text="Numberline", variable=e,
                                     onvalue=True, offvalue=False,
                                     command=lambda e=e,
@@ -247,10 +248,10 @@ class Graph:
 
         number_button.grid(row=7, column=0)
 
-        Label(self.root, text="Axes grid").grid(row=8, column=0)
+        Label(self.settings_window, text="Axes grid").grid(row=8, column=0)
         f = BooleanVar()
         f.set(True)
-        number_button = Checkbutton(self.root, background='white',
+        number_button = Checkbutton(self.settings_window, background='white',
                                     text="X-Y plane", variable=f,
                                     onvalue=True, offvalue=False,
                                     command=lambda f=f,
@@ -259,7 +260,7 @@ class Graph:
 
         g = BooleanVar()
         g.set(True)
-        number_button = Checkbutton(self.root, background='white',
+        number_button = Checkbutton(self.settings_window, background='white',
                                     text="X-Z plane", variable=g,
                                     onvalue=True, offvalue=False,
                                     command=lambda g=g,
@@ -268,12 +269,12 @@ class Graph:
 
         h = BooleanVar()
         h.set(True)
-        number_button = Checkbutton(self.root, background='white',
+        number_button = Checkbutton(self.settings_window, background='white',
                                     text="Y-Z plane", variable=h,
                                     onvalue=True, offvalue=False,
                                     command=lambda h=h,
                                                    self=self: exec("self.show_yz_axes = h.get()"))
-        number_button.grid(row=9, column=2)
+        number_button.grid(row=10, column=0)
 
         if self.show_number_line:
             number_button.select()
@@ -335,9 +336,9 @@ class Graph:
     #  List of all the buttons and their properties which are created at the start of the program
     def create_buttons(self):
 
-        list_of_images = ["\Close", "\Point", "\Parametric Equation", "\Cartesian Equation", "\Line", "\Rotation",
-                          "\Reflection", "\Scale", "\Coordinates", "\Coordinates", "\Reset View", "\Zoom In",
-                          "\Zoom Out"]
+        list_of_images = ["/Close", "/Point", "/Parametric Equation", "/Cartesian Equation", "/Line", "/Rotation",
+                          "/Reflection", "/Scale", "/Coordinates", "/Coordinates", "/Reset View", "/Zoom In",
+                          "/Zoom Out"]
         # [title       ,text              ,x   ,y   ,width ,height ,radius ,shape,     font_size, font_colour      ,
         # border_colour,    bg_colour,       parent_window, image_file]
         listOfButtons = [
@@ -448,19 +449,21 @@ class Graph:
             self.z_axes_sf = 40
 
         for event in self.parent_app.get_events():
-            # This is necessary for the window to close easily
+            # This is necessary for the root to close easily
             if event.type == pygame.QUIT:
                 objects = self.point_windows
                 objects += self.parametric_equation_windows
-                objects += self.artesian_equations_windows
+                objects += self.cartesian_equations_windows
                 objects += self.slider_windows
                 objects += self.image_windows
-                for objects in objects:
+                for obj in objects:
                     try:
-                        objects.root.destroy()
+                        obj.root.destroy()
+                        obj.root = None
                     except:
                         continue
-
+                if self.settings_window:
+                    self.settings_window = None
             # If the user clicks the mouse
             if event.type == pygame.MOUSEBUTTONDOWN:
 
@@ -581,32 +584,32 @@ class Graph:
                     self.axes_rotation_mouse_pos = pygame.mouse.get_pos()
 
                 # If the user right clicks on a point, if the point is a
-                # part of an equation, then the equation's window is
-                # displayed or else the point's individual window is displayed
+                # part of an equation, then the equation's root is
+                # displayed or else the point's individual root is displayed
                 elif event.button == 3:
                     for point in self.points:
                         if (point.mouse_over_point()
                                 and point.equation is None):
                             if not point.window_open:
-                                point.window()
+                                point.root()
                         if (point.slider.mouse_over_slider()
                                 and point in self.selected_points
                                 and len(self.selected_points) == 1):
                             if not point.slider.window_open:
-                                point.slider.window()
-                    # Opens the window of an equation object if user
+                                point.slider.root()
+                    # Opens the root of an equation object if user
                     # right-clicks on graph
                     for equation in self.equations:
                         if equation != self.line_of_best_fit:
                             if (equation.mouse_over_graph()
                                     and not equation.window_open):
-                                equation.window()
+                                equation.root()
                             for slider in equation.sliders:
                                 if (slider.mouse_over_slider()
                                         and (equation in self.selected_equations
                                              or len(self.equations) == 1)):
                                     if not slider.window_open:
-                                        slider.window()
+                                        slider.root()
 
                     for slider in self.sliders:
                         if (slider.mouse_over_slider()
@@ -621,7 +624,7 @@ class Graph:
                     for image in self.images:
                         if image.mouseOverImage():
                             if not image.window_open:
-                                image.window()
+                                image.root()
 
                 # If the user scrolls up
                 if event.button == 4:
@@ -927,7 +930,7 @@ class Graph:
             if point.window_open:
                 pygame.draw.aaline(self.parent_app.get_screen(), point.colour,
                                    point.screen_pos,
-                                   (point.root.winfo_x(), point.root.winfo_y()))
+                                   (point.create_settings_window.winfo_x(), point.create_settings_window.winfo_y()))
 
     def update_lines(self):
         for line in self.lines:
@@ -1036,8 +1039,8 @@ class Graph:
 
         self.axes_transformation = matrix_multiply(self.axes_transformation,
                                                    scale(self.x_axes_sf,
-                                                        self.y_axes_sf,
-                                                        self.z_axes_sf))
+                                                         self.y_axes_sf,
+                                                         self.z_axes_sf))
 
     def update_screen(self):
         if self.notes:
@@ -1130,11 +1133,11 @@ class Graph:
                 line = regression(points)
                 (self.line_of_best_fit.a, self.line_of_best_fit.b) = line
                 # Line is drawn across the selected points only
-                (self.line_of_best_fit.startValue,
-                 self.line_of_best_fit.endValue) = (str(min(x_values)),
-                                                    str(max(x_values)))
+                (self.line_of_best_fit.start_value,
+                 self.line_of_best_fit.end_value) = (str(min(x_values)),
+                                                     str(max(x_values)))
 
-                self.line_of_best_fit.calculatePoints()
+                self.line_of_best_fit.calculate_points()
 
                 for point in self.line_of_best_fit.points:
                     point.calculate_screen_pos()
@@ -1192,9 +1195,9 @@ class Graph:
         if self.line_of_best_fit.mouse_over_graph():
             equation = self.line_of_best_fit
             show_text(self.parent_app.get_screen(),
-                      'x = ' + substitute_values(equation, equation.xEquation) + ' | y = ' + substitute_values(equation,
-                                                                                                               equation.yEquation) + ' | z = ' + substitute_values(
-                          equation, equation.zEquation),
+                      'x = ' + substitute_values(equation, equation.x_equation) + ' | y = ' + substitute_values(equation,
+                                                                                                                equation.y_equation) + ' | z = ' + substitute_values(
+                          equation, equation.z_equation),
                       pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1],
                       equation.colour, (255, 255, 255), 20)
 
@@ -1216,8 +1219,8 @@ class Graph:
                         if (slider.text in ['limit1', 'limit2']
                                 and equation.xEquation == 't' and equation.zEquation == '0'):
 
-                            slider.startValue = eval(syntax_correction(equation.startValue))
-                            slider.endValue = eval(syntax_correction(equation.endValue))
+                            slider.start_value = eval(syntax_correction(equation.startValue))
+                            slider.end_value = eval(syntax_correction(equation.endValue))
                             slider.draw_slider()
 
                             equation.limit1Point1.calculate_screen_pos()
@@ -1262,7 +1265,7 @@ class Graph:
                     if slider.x <= pygame.mouse.get_pos()[0] <= slider.x + slider.width:
                         slider.pointer.set_cor(pygame.mouse.get_pos()[0], slider.pointer.y, slider.pointer.z)
                         slider.pointer.screen_pos = (pygame.mouse.get_pos()[0], slider.pointer.y)
-                        slider.setVariable()
+                        slider.set_variable()
                         if 'limit' not in slider.text:
                             equation.calculatePoints()
 
@@ -1277,7 +1280,7 @@ class Graph:
                 if slider.x < pygame.mouse.get_pos()[0] < slider.x + slider.width:
                     slider.pointer.set_cor(pygame.mouse.get_pos()[0], slider.pointer.y, slider.pointer.z)
                     slider.pointer.screen_pos = (pygame.mouse.get_pos()[0], slider.pointer.y)
-                    slider.setVariable()
+                    slider.set_variable()
 
         return slider_active
 
@@ -1285,59 +1288,60 @@ class Graph:
     def update_windows(self):
         for point in self.point_windows:
             try:
-                entry_formatter(point.coordinatesent)
-                point.root.update_idletasks()
-                point.root.update()
+                entry_formatter(point.coordinates_ent)
+                point.create_settings_window.update_idletasks()
+                point.create_settings_window.update()
             except:
                 self.point_windows.remove(point)
                 point.window_open = False
 
         for equation in self.parametric_equation_windows:
             try:
-                entry_formatter(equation.xEquationent)
-                entry_formatter(equation.yEquationent)
-                entry_formatter(equation.zEquationent)
-                entry_formatter(equation.startValueent)
-                entry_formatter(equation.endValueent)
-                equation.root.update_idletasks()
-                equation.root.update()
+                entry_formatter(equation.x_equation_ent)
+                entry_formatter(equation.y_equation_ent)
+                entry_formatter(equation.z_equation_ent)
+                entry_formatter(equation.start_value_ent)
+                entry_formatter(equation.end_value_ent)
+
+                equation.create_settings_window.update_idletasks()
+                equation.create_settings_window.update()
             except:
                 self.parametric_equation_windows.remove(equation)
                 equation.window_open = False
 
-        for equation in self.artesian_equations_windows:
+        for equation in self.cartesian_equations_windows:
             try:
-                entry_formatter(equation.cartesianEquationent)
-                entry_formatter(equation.startXent)
-                entry_formatter(equation.endXent)
-                entry_formatter(equation.startYent)
-                entry_formatter(equation.endYent)
-                entry_formatter(equation.startZent)
-                entry_formatter(equation.endZent)
-                equation.root.update_idletasks()
-                equation.root.update()
+                entry_formatter(equation.cartesian_equation_ent)
+                entry_formatter(equation.start_x_ent)
+                entry_formatter(equation.end_x_ent)
+                entry_formatter(equation.start_y_ent)
+                entry_formatter(equation.end_y_ent)
+                entry_formatter(equation.start_z_ent)
+                entry_formatter(equation.end_z_ent)
+                equation.create_settings_window.update_idletasks()
+                equation.create_settings_window.update()
             except:
-                self.artesian_equations_windows.remove(equation)
+                self.cartesian_equations_windows.remove(equation)
                 equation.window_open = False
 
         for slider in self.slider_windows:
             try:
-                slider.root.update_idletasks()
-                slider.root.update()
+                slider.create_settings_window.update_idletasks()
+                slider.create_settings_window.update()
             except:
                 self.slider_windows.remove(slider)
                 slider.window_open = False
 
         for image in self.image_windows:
             try:
-                image.root.update_idletasks()
-                image.root.update()
+                image.create_settings_window.update_idletasks()
+                image.create_settings_window.update()
             except:
                 self.image_windows.remove(image)
                 image.window_open = False
         try:
-            self.root.update_idletasks()
-            self.root.update()
+            self.settings_window.update_idletasks()
+            self.settings_window.update()
         except:
             self.window_open = False
 

@@ -121,7 +121,7 @@ def fact(x):
 
 
 def sigma(start, end, expression, step=1):
-    from ..String_Formatting import syntax_correction
+    from ..StringFormatting import syntax_correction
     sum = 0
     r = start
     expression = syntax_correction(expression)
@@ -147,7 +147,7 @@ def mandelbrot(x, y, iterations=6):
 
 
 def derivative(equation, x):
-    from ..String_Formatting import syntax_correction
+    from ..StringFormatting import syntax_correction
     def f(x):
         t = x
         r = x
@@ -158,7 +158,7 @@ def derivative(equation, x):
 
 
 def newton_rhapson(equation, x0, iterations=20):
-    from ..String_Formatting import syntax_correction
+    from ..StringFormatting import syntax_correction
     x = x0
     t = x0
     r = x0
@@ -211,7 +211,7 @@ def regression(listOfPoints):
 
 def integral(function, start2, end2, rule='simpsons', equation=None,
              area=False, step=0.01):
-    from ..String_Formatting import syntax_correction
+    from ..StringFormatting import syntax_correction
     if equation is not None:
         a = equation.a
         a = equation.b

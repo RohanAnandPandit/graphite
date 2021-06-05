@@ -46,7 +46,7 @@ class Image:
 
         cord = str(pygame.mouse.get_pos()[0]-100)+'+'+str(pygame.mouse.get_pos()[1]+10)
         self.root.geometry('260x60+'+cord)
-        # Makes sure that the window opens on top of the Pygame window.
+        # Makes sure that the root opens on top of the Pygame root.
         self.root.attributes('-topmost', True)
         self.root.title('Image Properties')
 

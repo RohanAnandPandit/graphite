@@ -66,7 +66,7 @@ class Buttons:
         if self.title == 'Add Point':
             from Point import Point
             point = Point(self.parent_window)
-            point.window()
+            point.root()
 
         # Makes a particular type of transformation active and the rest inactive
         if self.title in self.parent_window.transformation_types:
@@ -136,14 +136,14 @@ class Buttons:
 
         # An 'Equation' object is created even before any of it's equation and
         # ranges are assigned.
-        # Calling the 'window' method allows the user to do so.
+        # Calling the 'root' method allows the user to do so.
         if self.title == 'Parametric Equation':
             e = Equation(self.parent_window, 'parametric')
-            e.window()
+            e.root()
 
         if self.title == 'Cartesian Equation':
             e = Equation(self.parent_window, 'cartesian')
-            e.window()
+            e.root()
 
         # Controls whether the x,y and z axes are displayed
         if self.title == 'Axes Display':
@@ -260,13 +260,13 @@ class Buttons:
             self.parent_window.notes = invert(self.parent_window.notes)
             list_of_objects = self.parent_window.point_windows
             list_of_objects += self.parent_window.parametric_equation_windows
-            list_of_objects += self.parent_window.artesian_equations_windows
+            list_of_objects += self.parent_window.cartesian_equations_windows
             list_of_objects += self.parent_window.slider_windows
             list_of_objects += self.parent_window.image_windows
 
             for objects in list_of_objects:
                 try:
-                    objects.root.destroy()
+                    objects.create_settings_window.destroy()
                 except:
                     continue
 
@@ -301,7 +301,7 @@ class Buttons:
         if self.title == 'Image':
             i = Image(0, 0, self.parent_window.x_rotation, self.parent_window.y_rotation,
                       self.parent_window.zRotation, self.parent_window)
-            i.window()  # Creates image object and opens it's window
+            i.window()  # Creates image object and opens it's root
 
         if self.title == 'LOBF':
             self.parent_window.show_line_of_best_fit = invert(self.parent_window.show_line_of_best_fit)
@@ -311,7 +311,7 @@ class Buttons:
                 self.text = 'Show,LOBF'
 
         if self.title == 'Settings':
-            self.parent_window.settings_window()
+            self.parent_window.create_settings_window()
 
     # Draws the button
     def show_button(self):
@@ -349,3 +349,13 @@ class Buttons:
             else:
                 show_multiline_text(self.parent_window.get_screen(), self.text, self.x,
                                     self.y, (0, 0, 0), (255, 255, 255), self.font_size, 20)
+
+    def __get_state__(self):
+        attributes = self.__dict__.copy()
+        try:
+            for attr in ('image',):
+                del attributes[attr]
+        except:
+            pass
+
+        return attributes

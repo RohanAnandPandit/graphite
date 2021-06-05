@@ -5,7 +5,7 @@ import pygame
 from math import sqrt
 from tkinter import Label, Button, Entry, Tk
 from random import randint
-from String_Formatting import syntax_correction
+from StringFormatting import syntax_correction
 
 
 class Point:  # Used to display individual points on the screen
@@ -97,7 +97,7 @@ class Point:  # Used to display individual points on the screen
         return int(x), int(y)
 
     def calculate_screen_pos(self):
-        if self.pos_vec != None:
+        if self.pos_vec is not None:
             self.axesTransformation = self.parent_window.axes_transformation
             screen_pos = matrix_multiply(self.axesTransformation, self.pos_vec)
             screen_pos = self.screen_cor(screen_pos[0][0], screen_pos[1][0])
@@ -202,62 +202,61 @@ class Point:  # Used to display individual points on the screen
         self.set_current_window()
         self.parent_window.point_windows.append(self)
         self.root.bind('<Enter>', lambda event: self.set_current_window())
-        # self.root.bind('<Leave>', lambda event: self.resetCurrentWindow())
+        # self.settings_window.bind('<Leave>', lambda event: self.resetCurrentWindow())
         self.window_open = True
-        self.root.attributes('-topmost', True)  # Makes sure that the window opens on top of the Pygame window.
+        self.root.attributes('-topmost', True)  # Makes sure that the root opens on top of the Pygame root.
         self.root.title('Point Properties')
 
         if x is None:
-            (x, y) = (pygame.mouse.get_pos()[0] + 10, pygame.mouse.get_pos()[1] + 10)
+            x, y = (pygame.mouse.get_pos()[0] + 10, pygame.mouse.get_pos()[1] + 10)
 
-        # self.root.geometry('260x80+'+str(x)+'+'+str(y)) # 'width x height + xcor + ycor'
+        # self.settings_window.geometry('260x80+'+str(x)+'+'+str(y)) # 'width x height + xcor + ycor'
         # User input for the x coordinate of the point
-        # self.coordinateslabel = Label(self.root, text='coordinates=')
+        # self.coordinateslabel = Label(self.settings_window, text='coordinates=')
         # self.coordinateslabel.grid(row = 0, column = 0, columnspan = 2)
         # User input for the x coordinate of the point
-        self.coordinatesent = Entry(self.root, width=20, font='Calibri 15')
-        self.coordinatesent.grid(row=0, column=0, columnspan=5)
+
+        self.coordinates_ent = Entry(self.root, width=20, font='Calibri 15')
+        self.coordinates_ent.grid(row=0, column=0, columnspan=5)
 
         if self.pos_vec is not None:
             if 't' in self.x2 or (self.y2 or self.x2 or self.z2):
-                self.coordinatesent.insert(0, self.x2)
+                self.coordinates_ent.insert(0, self.x2)
             else:
-                self.coordinatesent.insert(0, str(self.pos_vec[0][0]))
+                self.coordinates_ent.insert(0, str(self.pos_vec[0][0]))
 
             if 't' in (self.y2 or self.x2 or self.z2):
-                self.coordinatesent.insert(len(self.coordinatesent.get()), '|' + self.y2)
+                self.coordinates_ent.insert(len(self.coordinates_ent.get()), '|' + self.y2)
             else:
-                self.coordinatesent.insert(len(self.coordinatesent.get()), ',' + str(self.pos_vec[1][0]))
+                self.coordinates_ent.insert(len(self.coordinates_ent.get()), ',' + str(self.pos_vec[1][0]))
 
             if 't' in (self.y2 or self.x2 or self.z2):
-                self.coordinatesent.insert(len(self.coordinatesent.get()), '|' + self.z2)
+                self.coordinates_ent.insert(len(self.coordinates_ent.get()), '|' + self.z2)
             else:
-                self.coordinatesent.insert(len(self.coordinatesent.get()), ',' + str(self.pos_vec[2][0]))
+                self.coordinates_ent.insert(len(self.coordinates_ent.get()), ',' + str(self.pos_vec[2][0]))
 
-        self.apply = Button(self.root, text='Apply', command=lambda: self.cor_validation())
+        apply = Button(self.root, text='Apply', command=lambda: self.cor_validation())
         # This button will effectively create the point (if the user inputs are valid)
-        self.apply.grid(row=2, column=2)
+        apply.grid(row=2, column=2)
 
-        self.applyAndNew = Button(self.root, text='Apply and New', command=lambda: self.cor_validation(True))
+        applyAndNew = Button(self.root, text='Apply and New', command=lambda: self.cor_validation(True))
         # This button will effectively create the point (if the user inputs are valid)
-        self.applyAndNew.grid(row=2, column=3, columnspan=2)
+        applyAndNew.grid(row=2, column=3, columnspan=2)
 
-        self.delete = Button(self.root, text='Delete', command=lambda: self.delete_point())
-        self.delete.grid(row=2, column=5)
+        delete = Button(self.root, text='Delete', command=lambda: self.delete_point())
+        delete.grid(row=2, column=5)
 
         Label(self.root, text='Label', width=5).grid(row=2, column=0)
 
-        self.textent = Entry(self.root, width=5, font='Calibri 15')
-        self.textent.grid(row=2, column=1)
-        self.textent.insert(0, self.text)
+        self.point_label = Entry(self.root, width=5, font='Calibri 15')
+        self.point_label.grid(row=2, column=1)
+        self.point_label.insert(0, self.text)
 
     def trace_setting(self):
         if self.trace:
             self.trace = False
-            self.traceButton.config(text='Show Trace')
         else:
             self.trace = True
-            self.traceButton.config(text='No Trace')
 
     def delete_point(self):
         if self in self.parent_window.points:
@@ -285,15 +284,14 @@ class Point:  # Used to display individual points on the screen
         else:
             t = self.parent_window.t
 
-
-        cor = self.coordinatesent.get().split(',')
+        cor = self.coordinates_ent.get().split(',')
 
         try:
             # The coordinates need to be integers because the pixels cannot
             # be decimals
-            x = round(float(eval(syntaxCorrection(cor[0]))), 2)
-            y = round(float(eval(syntaxCorrection(cor[1]))), 2)
-            z = round(float(eval(syntaxCorrection(cor[2]))), 2)
+            x = round(float(eval(syntax_correction(cor[0]))), 2)
+            y = round(float(eval(syntax_correction(cor[1]))), 2)
+            z = round(float(eval(syntax_correction(cor[2]))), 2)
         except:
             valid_cor = False
 
@@ -310,9 +308,9 @@ class Point:  # Used to display individual points on the screen
 
             if newPoint:
                 p = Point(self.parent_window)
-                p.window(self.root.winfo_x(), self.root.winfo_y())
+                p.root(self.root.winfo_x(), self.root.winfo_y())
 
-            self.text = self.textent.get()
+            self.text = self.point_label.get()
             self.close_window()
 
     def set_cor(self, x, y, z):
@@ -332,3 +330,13 @@ class Point:  # Used to display individual points on the screen
 
     def reset_current_window(self):
         self.parent_window.current_window = None
+
+    def __get_state__(self):
+        attributes = self.__dict__.copy()
+        try:
+            for attr in ('root', 'coordinates_ent', 'point_label'):
+                del attributes[attr]
+        except:
+            pass
+
+        return attributes

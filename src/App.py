@@ -68,6 +68,7 @@ class App:
                 self.save_app()
                 pygame.quit()
                 sys.exit()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     for tab in self.tabs.values():
@@ -95,16 +96,16 @@ class App:
 
     def save_app(self):
         self.events = []
-        file = open(utils.GRAPH_APP, 'wb')
-        self.remove_images()
+        file = open(utils.APP_PATH, 'wb')
+        self.remove_unnecessary_objects()
         pickle.dump(self, file)
 
-    def remove_images(self):
+    def remove_unnecessary_objects(self):
         for graph in self.graphs.values():
             for button in graph.buttons:
                 button.image = None
 
-    def set_images(self):
+    def reset_graph(self):
         for graph in self.graphs.values():
             for button in graph.buttons:
                 button.set_image()

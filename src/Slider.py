@@ -1,5 +1,5 @@
 from Point import Point
-from src.String_Formatting import syntax_correction
+from src.StringFormatting import syntax_correction
 from utils import show_multiline_text
 import pygame
 from tkinter import Tk, Label, Entry, Button
@@ -27,17 +27,17 @@ class Slider:  # Used for controlling the values of variables in the given range
         self.move_pointer = False  # To determine if the user wants to
         self.typeOfValues = typeOfValues  # Integer or float type values
         self.set_value(default)
-        self.setVariable()
+        self.set_variable()
         self.windowOpen = False
 
     def window(self):  # Sliderwindow
         self.root = Tk()
         self.windowOpen = True
         self.parentWindow.slider_windows.append(self)
-        # Ensures that the window will be in focus
+        # Ensures that the root will be in focus
         self.root.after(1, lambda: self.root.focus_force())
         self.windowOpen = True
-        # Makes sure that the window opens on top of the Pygame window.
+        # Makes sure that the root opens on top of the Pygame root.
         self.root.attributes('-topmost', True)
         self.root.title('Slider Properties')
 
@@ -84,9 +84,9 @@ class Slider:  # Used for controlling the values of variables in the given range
         if start <= value <= end:
             (self.startValue, self.endValue) = (start, end)
             self.set_value(value)
-            self.setVariable()
+            self.set_variable()
             if self.text in ['a', 'b', 'c', 'd', 'e']:
-                self.parentObject.calculatePoints()
+                self.parentObject.calculate_points()
 
             self.root.destroy()
 
@@ -114,7 +114,7 @@ class Slider:  # Used for controlling the values of variables in the given range
         if self.typeOfValues == 'integers':
             self.variable = int(self.variable)
 
-    def setVariable(self):
+    def set_variable(self):
         self.calculate_value()
         exec('self.parentObject.' + self.variableName + '=' + str(self.variable))
         try:
@@ -128,22 +128,22 @@ class Slider:  # Used for controlling the values of variables in the given range
         if self.text == 'limit1':
             self.parentObject.limit1 = self.variable
             t = self.variable
-            if self.parentObject.yEquation != '':
+            if self.parentObject.y_equation != '':
                 try:
                     self.parentObject.limit1Point1.set_cor(self.variable, 0, 0)
-                    self.parentObject.limit1Point2.set_cor(self.variable,
-                                                           eval(syntax_correction(self.parentObject.yEquation)), 0)
+                    self.parentObject.limit1_point2.set_cor(self.variable,
+                                                            eval(syntax_correction(self.parentObject.y_equation)), 0)
                 except:
                     pass
 
         elif self.text == 'limit2':
             self.parentObject.limit2 = self.variable
             t = self.variable
-            if self.parentObject.yEquation != '':
+            if self.parentObject.y_equation != '':
                 try:
                     self.parentObject.limit2Point1.set_cor(self.variable, 0, 0)
-                    self.parentObject.limit2Point2.set_cor(self.variable,
-                                                           eval(syntax_correction(self.parentObject.yEquation)), 0)
+                    self.parentObject.limit2_point2.set_cor(self.variable,
+                                                            eval(syntax_correction(self.parentObject.y_equation)), 0)
                 except:
                     pass
 

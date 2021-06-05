@@ -4,10 +4,10 @@ from utils import show_multiline_text
 
 # This class is used to represents individual lines created by the user
 class Line:
-    def __init__(self, point1, point2, parentWindow, text=''):
+    def __init__(self, point1, point2, parent_window, text=''):
         self.point1 = point1  # Point object
         self.point2 = point2  # Point object
-        self.parent_window = parentWindow
+        self.parent_window = parent_window
         self.colour = (0, 0, 0)  # The colour of the line
         self.text = text
 
