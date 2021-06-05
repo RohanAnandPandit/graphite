@@ -2,14 +2,14 @@ from random import randint
 import pygame
 from tkinter import Tk
 
-# IMAGES_PATH = "C:/GitHub_Projects/Graph3D/src/images/"
-
-IMAGES_PATH = "images/"
+DIR_PATH = 'C:/Program Files/graphite/'
+IMAGES_PATH = DIR_PATH + 'images/'
 colours = {'white': (255, 255, 255), 'black': (0, 0, 0), 'red': (255, 0, 0),
            'blue': (0, 0, 255), 'green': (0, 255, 0)}
 
 screen = None
-GRAPH_APP = 'graph_app'
+APP_PATH = DIR_PATH + 'graph_app'
+FONT_PATH = DIR_PATH + 'Vogue.ttf'
 
 
 def set_screen(dimensions):
@@ -40,7 +40,7 @@ def show_multiline_text(screen, text2, centreX, centreY, fontColour, fontBg,
     for line in text2.split(','):
         # initialises font for displaying text
         try:
-            basicfont = pygame.font.Font('Vogue.ttf', fontSize)
+            basicfont = pygame.font.Font(FONT_PATH, fontSize)
             text = basicfont.render(line, True, fontColour, fontBg)
             textrect = text.get_rect()
             textrect.center = (centreX, y)  #
