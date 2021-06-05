@@ -179,14 +179,14 @@ def entry_formatter(entry):
                 entry.icursor(i + 2)
 
         if i + 4 < len(entry.get()) + 1:  # Ensures there are at least 4 characters left
-            # If the user types sqrt it will be replaces by the symbol for square root
+            # If the user types sqrt it will be replaces by the symbol for square settings_window
             if entry.get()[i:i + 4] == 'sqrt':
                 entry.delete(i, i + 4)
                 entry.insert(i, '√()')
                 entry.icursor(i + 2)
                 l = l - 1  # The length of the string is reduced by one
 
-            # If the user types cbrt it will be replaces by the symbol for cube root
+            # If the user types cbrt it will be replaces by the symbol for cube settings_window
             elif entry.get()[i:i + 4] == 'cbrt':
                 entry.delete(i, i + 4)
                 entry.insert(i, '∛()')
