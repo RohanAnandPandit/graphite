@@ -2,14 +2,19 @@ from random import randint
 import pygame
 from tkinter import Tk
 
-DIR_PATH = 'C:/Program Files/graphite/'
-IMAGES_PATH = DIR_PATH + 'images/'
+NAME = 'Graphite'
+DIR_PATH = 'C:/Program Files/' + NAME + '/'
+IMAGES = 'images'
+IMAGES_PATH = DIR_PATH + IMAGES + '/'
+APP_NAME = 'graph_app'
+APP_PATH = DIR_PATH + APP_NAME
+FONT_NAME = 'Vogue.ttf'
+FONT_PATH = DIR_PATH + FONT_NAME
+
 colours = {'white': (255, 255, 255), 'black': (0, 0, 0), 'red': (255, 0, 0),
            'blue': (0, 0, 255), 'green': (0, 255, 0)}
 
 screen = None
-APP_PATH = DIR_PATH + 'graph_app'
-FONT_PATH = DIR_PATH + 'Vogue.ttf'
 
 
 def set_screen(dimensions):
