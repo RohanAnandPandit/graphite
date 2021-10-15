@@ -1,5 +1,5 @@
-from Point import Point
-from src.StringFormatting import syntax_correction
+from point import Point
+from src.string_formatting import syntax_correction
 from utils import show_multiline_text
 import pygame
 from tkinter import Tk, Label, Entry, Button

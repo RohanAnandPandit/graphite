@@ -1,16 +1,16 @@
-from Image import Image
+from image import Image
 from utils import random_colour, show_multiline_text, show_text
-from maths.Matrices import *
+from maths.matrices import *
 import pygame
 from math import sqrt
 from tkinter import Label, Button, Entry, Tk
 from random import randint
-from StringFormatting import syntax_correction
+from string_formatting import syntax_correction
 
 
 class Point:  # Used to display individual points on the screen
     def __init__(self, parentWindow, createSlider=True):
-        from Buttons import Buttons
+        from buttons import Buttons
 
         self.parent_window = parentWindow
         self.cor = ()
@@ -41,7 +41,7 @@ class Point:  # Used to display individual points on the screen
         self.t = 0
 
         if createSlider:
-            from Slider import Slider
+            from slider import Slider
             self.slider = Slider('t', 't', 5, 100, -10, 10, self.parent_window,
                                  self, 100, 50, '', 0)
         try:

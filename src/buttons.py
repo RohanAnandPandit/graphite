@@ -1,8 +1,8 @@
 import pygame
 from tkinter import *
 from utils import show_multiline_text, invert, show_image, IMAGES_PATH
-from Equation import Equation
-from Line import Line
+from equation import Equation
+from line import Line
 import os
 
 
@@ -10,7 +10,7 @@ import os
 class Buttons:
     def __init__(self, title, text, x, y, width, height, radius, shape, font_size,
                  font_colour, border_colour, bg_colour, parent_window, image_file):
-        from Point import Point
+        from point import Point
         self.parent_window = parent_window
         self.leftClick = False
         self.rightClick = False
@@ -64,7 +64,7 @@ class Buttons:
         self.active = invert(self.active)
 
         if self.title == 'Add Point':
-            from Point import Point
+            from point import Point
             point = Point(self.parent_window)
             point.root()
 

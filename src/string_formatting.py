@@ -1,5 +1,5 @@
-from maths.Mathematical_Constants import *
-from maths.Mathematical_Functions import *
+from maths.math_constants import *
+from maths.math_functions import *
 from utils import invert
 
 constants = ['π', 'φ']

@@ -1,8 +1,8 @@
-from Slider import *
-from Buttons import *
+from slider import *
+from buttons import *
 from utils import random_colour
-from StringFormatting import syntax_correction
-from maths.Mathematical_Functions import *
+from string_formatting import syntax_correction
+from maths.math_functions import *
 
 
 # This class is used to represent a graph inputted by the user

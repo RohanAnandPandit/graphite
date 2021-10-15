@@ -2,7 +2,7 @@ import os
 from utils import NAME, FONT_NAME, IMAGES
 
 commands = [
-    'pyinstaller --onefile main.spec',  # Creates executable in dist folder
+    'pyinstaller --onefile main.py',  # Creates executable in dist folder
     'rmdir /s /q build',  # Deletes build folder
     'cd dist && ren main.exe ' + NAME.lower() + '.exe && cd ..',  # Renames executable
     'if exist ' + NAME + ' rmdir /s /q ' + NAME,  # Deletes previous folder

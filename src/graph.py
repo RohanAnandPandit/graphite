@@ -1,16 +1,16 @@
-from Buttons import Buttons
-from Slider import Slider
-from Image import Image
-from Point import Point
-from Line import Line
-from Equation import Equation
+from buttons import Buttons
+from slider import Slider
+from image import Image
+from point import Point
+from line import Line
+from equation import Equation
 from utils import *
-from maths.Transformations import *
-from maths.Matrices import *
-from maths.Mathematical_Functions import *
-from maths.Mathematical_Constants import *
+from maths.transformations import *
+from maths.matrices import *
+from maths.math_functions import *
+from maths.math_constants import *
 from math import pi
-from StringFormatting import syntax_correction, entry_formatter, substitute_values
+from string_formatting import syntax_correction, entry_formatter, substitute_values
 from tkinter import *
 import utils
 import pygame

@@ -1,4 +1,4 @@
-from App import App
+from app import App
 import os
 import pygame
 import ctypes

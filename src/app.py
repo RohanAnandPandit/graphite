@@ -1,5 +1,5 @@
-from Buttons import Buttons
-from Graph import Graph
+from buttons import Buttons
+from graph import Graph
 import utils
 import pygame
 from utils import colours
