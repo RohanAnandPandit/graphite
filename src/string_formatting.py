@@ -1,6 +1,6 @@
-from maths.math_constants import *
-from maths.math_functions import *
-from utils import invert
+from .maths.math_constants import *
+from .maths.math_functions import *
+from .utils import invert
 
 constants = ['π', 'φ']
 

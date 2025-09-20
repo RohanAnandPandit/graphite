@@ -1,8 +1,8 @@
-from app import App
+from .app import App
 import os
 import pygame
 import ctypes
-from utils import window_size, set_screen, APP_PATH
+from .utils import window_size, set_screen, APP_PATH
 import pickle
 pygame.init()
 

@@ -1,8 +1,7 @@
-from buttons import Buttons
-from graph import Graph
-import utils
+from .button import Button
+from .graph import Graph
 import pygame
-from utils import colours
+from .utils import colours, APP_PATH
 import sys
 import pickle
 
@@ -19,7 +18,7 @@ class App:
         self.graphs = {}
         self.tab_width = 100
         self.tab_height = 30
-        self.tabs['t0'] = Buttons('t0', 'Graph ', 0, 0,
+        self.tabs['t0'] =Button('t0', 'Graph ', 0, 0,
                                   self.tab_width, self.tab_height, None, 'rectangle',
                                   20, colours['black'],
                                   colours['black'], colours['white'],
@@ -29,12 +28,12 @@ class App:
 
         self.current_tab = 't0'
 
-        self.new_tab_button = Buttons('New Tab', '+', self.tab_width + 20,
+        self.new_tab_button =Button('New Tab', '+', self.tab_width + 20,
                                       15, self.tab_width, self.tab_height, 15, 'circle',
                                       30, colours['black'], colours['black'],
                                       colours['white'], self, '')
     def get_screen(self):
-        from utils import screen
+        from .utils import screen
         return screen
 
     def get_events(self):
@@ -84,7 +83,7 @@ class App:
                         if type(obj).__name__ == 'Graph':
                             # type(object).__name__ returns the name of the
                             # class of the which the object is an instance of
-                            button = Buttons('t' + str(self.number_of_tabs),
+                            button =Button('t' + str(self.number_of_tabs),
                                              'Graph', self.tab_width * (self.number_of_tabs - 1),
                                              0, self.tab_width, self.tab_height, None, 'rectangle',
                                              20, colours['black'],
@@ -96,7 +95,7 @@ class App:
 
     def save_app(self):
         self.events = []
-        file = open(utils.APP_PATH, 'wb')
+        file = open(APP_PATH, 'wb')
         self.remove_unnecessary_objects()
         pickle.dump(self, file)
 
