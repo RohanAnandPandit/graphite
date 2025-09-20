@@ -1,16 +1,21 @@
+import sys
 import pygame
-from tkinter import *
-from utils import show_multiline_text, invert, show_image, IMAGES_PATH
-from equation import Equation
-from line import Line
 import os
 
+from tkinter import *
+from .utils import show_multiline_text, invert, IMAGES_PATH
+from .equation import Equation
+from .line import Line
+from .image import Image
 
-# The class is called 'Buttons' instead of 'Button' because 'Button' is a tkinter function
-class Buttons:
-    def __init__(self, title, text, x, y, width, height, radius, shape, font_size,
-                 font_colour, border_colour, bg_colour, parent_window, image_file):
-        from point import Point
+
+# The class is called 'Buttons' instead of 'Button' because 'Button' is a
+# tkinter function
+class Button:
+    def __init__(self, title, text, x, y, width, height, radius, shape,
+                 font_size,
+                 font_colour, border_colour, bg_colour, parent_window,
+                 image_file):
         self.parent_window = parent_window
         self.leftClick = False
         self.rightClick = False
@@ -41,7 +46,8 @@ class Buttons:
             if os.path.exists(file_path):
                 self.image = pygame.image.load(file_path).convert()
 
-    # Determines if the mouse pointer is in the area of the button based on the shape
+    # Determines if the mouse pointer is in the area of the button based on
+    # the shape
     def mouse_over_button(self):
         if self.shape == 'circle':
             dx = self.x - pygame.mouse.get_pos()[0]
@@ -52,21 +58,23 @@ class Buttons:
 
         elif self.shape == 'rectangle':
             if (self.x < pygame.mouse.get_pos()[0] < self.x + self.width
-                    and self.y < pygame.mouse.get_pos()[1] < self.y + self.height):
+                    and self.y < pygame.mouse.get_pos()[
+                        1] < self.y + self.height):
                 return True
             return False
 
     def hoverCommand(self):
         pass
 
-    #  The procedure that need to be performed when the mouse is left clicked on the button
+    # The procedure that need to be performed when the mouse is left-clicked
+    # on the button
     def left_click_command(self):
         self.active = invert(self.active)
 
         if self.title == 'Add Point':
-            from point import Point
+            from .point import Point
             point = Point(self.parent_window)
-            point.root()
+            point.window()
 
         # Makes a particular type of transformation active and the rest inactive
         if self.title in self.parent_window.transformation_types:
@@ -134,16 +142,16 @@ class Buttons:
 
             self.parent_window.two_d_mode = True
 
-        # An 'Equation' object is created even before any of it's equation and
+        # An 'Equation' object is created even before any of its equation and
         # ranges are assigned.
         # Calling the 'root' method allows the user to do so.
         if self.title == 'Parametric Equation':
             e = Equation(self.parent_window, 'parametric')
-            e.root()
+            e.window()
 
         if self.title == 'Cartesian Equation':
             e = Equation(self.parent_window, 'cartesian')
-            e.root()
+            e.window()
 
         # Controls whether the x,y and z axes are displayed
         if self.title == 'Axes Display':
@@ -165,7 +173,8 @@ class Buttons:
                 while i < len(self.parent_window.selected_points):
                     # Creates a new line object for the two points selected by the user
                     l = Line(self.parent_window.selected_points[i - 1],
-                             self.parent_window.selected_points[i], self.parent_window)
+                             self.parent_window.selected_points[i],
+                             self.parent_window)
                     self.parent_window.lines.append(l)
                     i = i + 1
                 # If there are more than two points then creates a line between the first and last point
@@ -186,14 +195,16 @@ class Buttons:
             self.parent_window.z_axes_sf = self.parent_window.z_axes_sf * 1.05
 
         if self.title == 'Drop Points':
-            self.parent_window.drop_point = invert(self.parent_window.drop_point)
+            self.parent_window.drop_point = invert(
+                self.parent_window.drop_point)
             if self.parent_window.drop_point:
                 self.border_colour = (0, 0, 255)
             else:
                 self.border_colour = (0, 0, 0)
 
         if self.title == 'Brownian Motion':
-            self.parent_window.brownian_motion = invert(self.parent_window.brownian_motion)
+            self.parent_window.brownian_motion = invert(
+                self.parent_window.brownian_motion)
             if self.parent_window.brownian_motion:
                 self.border_colour = (0, 0, 255)
             else:
@@ -239,7 +250,8 @@ class Buttons:
                 self.parent_window.selected_lines[0].delete_line()
 
         if self.title == 'Background':
-            self.parent_window.light_background = invert(self.parent_window.light_background)
+            self.parent_window.light_background = invert(
+                self.parent_window.light_background)
             if not self.parent_window.light_background:
                 self.text = 'Light,Mode'
             else:
@@ -299,12 +311,14 @@ class Buttons:
             sys.exit()
 
         if self.title == 'Image':
-            i = Image(0, 0, self.parent_window.x_rotation, self.parent_window.y_rotation,
+            i = Image(0, 0, self.parent_window.x_rotation,
+                      self.parent_window.y_rotation,
                       self.parent_window.zRotation, self.parent_window)
             i.window()  # Creates image object and opens it's root
 
         if self.title == 'LOBF':
-            self.parent_window.show_line_of_best_fit = invert(self.parent_window.show_line_of_best_fit)
+            self.parent_window.show_line_of_best_fit = invert(
+                self.parent_window.show_line_of_best_fit)
             if self.parent_window.show_line_of_best_fit:
                 self.text = 'Hide,LOBF'
             else:
@@ -317,18 +331,24 @@ class Buttons:
     def show_button(self):
         if self.shape == 'rectangle':
             # Border
-            pygame.draw.rect(self.parent_window.get_screen(), self.border_colour,
-                             (self.x - 2, self.y + 2, self.width + 3, self.height + 3), 2)
+            pygame.draw.rect(self.parent_window.get_screen(),
+                             self.border_colour,
+                             (self.x - 2, self.y + 2, self.width + 3,
+                              self.height + 3), 2)
 
             if self.image is not None:
-                self.parent_window.get_screen().blit(self.image, (self.x, self.y))  # Image
+                self.parent_window.get_screen().blit(self.image,
+                                                     (self.x, self.y))  # Image
             else:
-                pygame.draw.rect(self.parent_window.get_screen(), self.bg_colour,
-                                 (self.x, self.y, self.width, self.height), 0)  # Fill
+                pygame.draw.rect(self.parent_window.get_screen(),
+                                 self.bg_colour,
+                                 (self.x, self.y, self.width, self.height),
+                                 0)  # Fill
 
                 show_multiline_text(self.parent_window.get_screen(), self.text,
                                     int(self.x + self.width / 2),
-                                    int(self.y + self.height / 2), self.font_colour,
+                                    int(self.y + self.height / 2),
+                                    self.font_colour,
                                     self.bg_colour, self.font_size, 20)
 
         elif self.shape == 'circle':
@@ -336,19 +356,23 @@ class Buttons:
                                (self.x, self.y),
                                self.radius, 0)  # Fill
 
-            pygame.draw.circle(self.parent_window.get_screen(), self.border_colour,
+            pygame.draw.circle(self.parent_window.get_screen(),
+                               self.border_colour,
                                (self.x, self.y),
                                self.radius, 1)  # Border
 
             if self.image is not None:
                 try:
                     self.parent_window.get_screen().blit(self.image,
-                                                         (self.x - self.radius, self.y - self.radius))
+                                                         (self.x - self.radius,
+                                                          self.y - self.radius))
                 except:
                     pass
             else:
-                show_multiline_text(self.parent_window.get_screen(), self.text, self.x,
-                                    self.y, (0, 0, 0), (255, 255, 255), self.font_size, 20)
+                show_multiline_text(self.parent_window.get_screen(), self.text,
+                                    self.x,
+                                    self.y, (0, 0, 0), (255, 255, 255),
+                                    self.font_size, 20)
 
     def __get_state__(self):
         attributes = self.__dict__.copy()

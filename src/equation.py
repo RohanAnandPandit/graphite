@@ -1,8 +1,12 @@
-from slider import *
-from buttons import *
-from utils import random_colour
-from string_formatting import syntax_correction
-from maths.math_functions import *
+import tkinter as tk
+import pygame
+
+from .slider import Slider
+from .button import Button
+from .point import Point
+from .utils import random_colour
+from .string_formatting import syntax_correction
+from .maths.math_functions import *
 
 
 # This class is used to represent a graph inputted by the user
@@ -57,19 +61,28 @@ class Equation:  # Used for plotting graphs
 
         # A list of Slider objects that will be displayed and active when the graph of the equation is selected
         self.sliders = [Slider('a', 'a', 0, self.parent_window.height - 60,
-                               -10, 10, self.parent_window, self, 180, 60, '', 1),
+                               -10, 10, self.parent_window, self, 180, 60, '',
+                               1),
                         Slider('b', 'b', 180, self.parent_window.height - 60,
-                               -10, 10, self.parent_window, self, 180, 60, '', 1),
+                               -10, 10, self.parent_window, self, 180, 60, '',
+                               1),
                         Slider('c', 'c', 360, self.parent_window.height - 60,
-                               -10, 10, self.parent_window, self, 180, 60, '', 1),
+                               -10, 10, self.parent_window, self, 180, 60, '',
+                               1),
                         Slider('d', 'd', 540, self.parent_window.height - 60,
-                               -10, 10, self.parent_window, self, 180, 60, '', 1),
+                               -10, 10, self.parent_window, self, 180, 60, '',
+                               1),
                         Slider('e', 'e', 720, self.parent_window.height - 60,
-                               -10, 10, self.parent_window, self, 180, 60, '', 1),
-                        Slider('limit1', 'limit1', 0, self.parent_window.height - 110,
-                               -10, 10, self.parent_window, self, 180, 50, '', 0),
-                        Slider('limit2', 'limit2', 200, self.parent_window.height - 110,
-                               -10, 10, self.parent_window, self, 180, 50, '', 0)]
+                               -10, 10, self.parent_window, self, 180, 60, '',
+                               1),
+                        Slider('limit1', 'limit1', 0,
+                               self.parent_window.height - 110,
+                               -10, 10, self.parent_window, self, 180, 50, '',
+                               0),
+                        Slider('limit2', 'limit2', 200,
+                               self.parent_window.height - 110,
+                               -10, 10, self.parent_window, self, 180, 50, '',
+                               0)]
 
         self.parent_window = parentWindow
         self.showSliders = False
@@ -121,14 +134,18 @@ class Equation:  # Used for plotting graphs
 
                 elif (self.points2[i].screen_pos[0] < 0
                       and self.points2[i - add].screen_pos[0] < 0
-                      or self.points2[i].screen_pos[0] > self.parent_window.width
-                      and self.points2[i - add].screen_pos[0] > self.parent_window.width):
+                      or self.points2[i].screen_pos[
+                          0] > self.parent_window.width
+                      and self.points2[i - add].screen_pos[
+                          0] > self.parent_window.width):
                     plot = False
 
                 elif (self.points2[i].screen_pos[1] < 0
                       and self.points2[i - add].screen_pos[1] < 0
-                      or self.points2[i].screen_pos[1] > self.parent_window.height
-                      and self.points2[i - add].screen_pos[1] > self.parent_window.height):
+                      or self.points2[i].screen_pos[
+                          1] > self.parent_window.height
+                      and self.points2[i - add].screen_pos[
+                          1] > self.parent_window.height):
                     plot = False
 
                 else:
@@ -175,25 +192,33 @@ class Equation:  # Used for plotting graphs
         i = 1
         while i < len(self.points) - 1:  # Iterates through all the points
             if (self.points[i] != '' and
-                    self.points[i - 1] != ''):  # To ensure it is not an undefined point
+                    self.points[
+                        i - 1] != ''):  # To ensure it is not an undefined point
                 point1 = self.points[i]
                 point2 = self.points[i - 1]
                 try:
                     if (point2.screen_pos[0] - pygame.mouse.get_pos()[0] == 0
                             # When one of the lines is vertical (to avoid zero division error)
-                            or point2.screen_pos[0] - point1.screen_pos[0] == 0):
-                        if (point2.screen_pos[0] - pygame.mouse.get_pos()[0] == 0
-                                and point2.screen_pos[0] - point1.screen_pos[0] == 0
-                                and min(point1.cor[1], self.point2.cor[1]) < pygame.mouse.get_pos()[1] < max(
+                            or point2.screen_pos[0] - point1.screen_pos[
+                                0] == 0):
+                        if (point2.screen_pos[0] - pygame.mouse.get_pos()[
+                            0] == 0
+                                and point2.screen_pos[0] - point1.screen_pos[
+                                    0] == 0
+                                and min(point1.cor[1], self.point2.cor[1]) <
+                                pygame.mouse.get_pos()[1] < max(
                                     point1.cor[1], point2.cor[1])):
                             return True
                         else:
                             return False
 
                     # First checks if the mouse is in the rectangle which has the line as a diagonal
-                    if (min(point1.screen_pos[0], point2.screen_pos[0]) < pygame.mouse.get_pos()[0] < max(
-                            point1.screen_pos[0], point2.screen_pos[0])
-                            and min(point1.screen_pos[1], point2.screen_pos[1]) < pygame.mouse.get_pos()[1] < max(
+                    if (min(point1.screen_pos[0], point2.screen_pos[0]) <
+                            pygame.mouse.get_pos()[0] < max(
+                                    point1.screen_pos[0], point2.screen_pos[0])
+                            and min(point1.screen_pos[1],
+                                    point2.screen_pos[1]) <
+                            pygame.mouse.get_pos()[1] < max(
                                 point1.screen_pos[1], point2.screen_pos[1])):
                         # Gradient of line joining two adjacent points on the curve
                         dy = (point1.screen_pos[1] - point2.screen_pos[1])
@@ -205,7 +230,8 @@ class Equation:  # Used for plotting graphs
                         dx = point1.screen_pos[0] - pygame.mouse.get_pos()[0]
                         gradient2 = dy / dx
                         if gradient1 == 0:
-                            if abs(round(gradient2, 2)) <= 0.1:  # For small gradients
+                            if abs(round(gradient2,
+                                         2)) <= 0.1:  # For small gradients
                                 return True
                         elif (abs(round(gradient1, 2)) * 0.9 <=
                               abs(round(gradient2, 2)) <=
@@ -231,21 +257,22 @@ class Equation:  # Used for plotting graphs
     # new parametric or Cartesian equation or edit them.
     # When these windows are open the rest of the program will stop functioning
     # (unless the required methods are specifically called).
-    def window(self, x=None, y=None):  # Equationwindow
-        self.root = Tk()
+    def window(self, x=None, y=None):  # Equation window
+        self.root = tk.Tk()
         self.window_open = True
         self.root.title('Equation Properties')
         self.root.after(1, lambda: self.root.focus_force())
         # Makes sure that the root opens on top of the Pygame root.
         self.root.attributes('-topmost', True)
         if x is None:
-            (x, y) = (pygame.mouse.get_pos()[0] + 10, pygame.mouse.get_pos()[1] + 10)
+            (x, y) = (
+            pygame.mouse.get_pos()[0] + 10, pygame.mouse.get_pos()[1] + 10)
 
         # self.settings_window.geometry('300x200+'+str(x)+'+'+str(y))
 
-        Label(self.root, text='step =', font='Caibri 10').grid(column=1, row=4)
+        tk.Label(self.root, text='step =', font='Caibri 10').grid(column=1, row=4)
 
-        self.accuracy_ent = Entry(self.root, width=5, font='Calibri 10')
+        self.accuracy_ent = tk.Entry(self.root, width=5, font='Calibri 10')
         self.accuracy_ent.grid(column=0, row=4)
 
         if self.type == 'parametric':
@@ -256,48 +283,49 @@ class Equation:  # Used for plotting graphs
 
     def cartesian_window(self):
         self.parent_window.cartesian_equations_windows.append(self)
-        Label(self.root, text='Equation:').grid(column=0, row=0)
-        self.cartesian_equation_ent = Entry(self.root, font='Calibri 15')
+        tk.Label(self.root, text='Equation:').grid(column=0, row=0)
+        self.cartesian_equation_ent = tk.Entry(self.root, font='Calibri 15')
         self.cartesian_equation_ent.grid(column=0, row=1)
-        self.start_x_ent = Entry(self.root, width=7, font='Calibri 12')
+        self.start_x_ent = tk.Entry(self.root, width=7, font='Calibri 12')
         self.start_x_ent.place(relx=0.2, rely=0.25)
-        self.x_range_label = Label(self.root, text='≤ x ≤', font='Calibri 12')
+        self.x_range_label = tk.Label(self.root, text='≤ x ≤', font='Calibri 12')
         self.x_range_label.place(relx=0.4, rely=0.25)
-        self.end_x_ent = Entry(self.root, width=7, font='Calibri 12')
+        self.end_x_ent = tk.Entry(self.root, width=7, font='Calibri 12')
         self.end_x_ent.place(relx=0.6, rely=0.25)
-        self.start_y_ent = Entry(self.root, width=7, font='Calibri 12')
+        self.start_y_ent = tk.Entry(self.root, width=7, font='Calibri 12')
         self.start_y_ent.place(relx=0.2, rely=0.35)
-        Label(self.root, text='≤ y ≤', font='Calibri 12').grid(column=1, row=3)
-        self.end_y_ent = Entry(self.root, width=7, font='Calibri 12')
+        tk.Label(self.root, text='≤ y ≤', font='Calibri 12').grid(column=1, row=3)
+        self.end_y_ent = tk.Entry(self.root, width=7, font='Calibri 12')
         self.end_y_ent.place(relx=0.6, rely=0.35)
-        self.start_z_ent = Entry(self.root, width=7, font='Calibri 12')
+        self.start_z_ent = tk.Entry(self.root, width=7, font='Calibri 12')
         self.start_z_ent.place(relx=0.2, rely=0.45)
-        Label(self.root, text='≤ z ≤', font='Calibri 12').grid(column=1, row=4)
-        self.end_z_ent = Entry(self.root, width=7, font='Calibri 12')
+        tk.Label(self.root, text='≤ z ≤', font='Calibri 12').grid(column=1, row=4)
+        self.end_z_ent = tk.Entry(self.root, width=7, font='Calibri 12')
         self.end_z_ent.place(relx=0.6, rely=0.45)
-        self.apply = Button(self.root, text='Apply',
-                            command=lambda: self.set_info_cartesian(self.cartesian_equation_ent.get(),
-                                                                    self.start_x_ent.get(),
-                                                                    self.end_x_ent.get(),
-                                                                    self.start_y_ent.get(),
-                                                                    self.end_y_ent.get(),
-                                                                    self.start_z_ent.get(),
-                                                                    self.end_z_ent.get(),
-                                                                    self.accuracy_ent.get(),
-                                                                    self.error_ent.get()))
+        self.apply = tk.Button(self.root, text='Apply',
+                            command=lambda: self.set_info_cartesian(
+                                self.cartesian_equation_ent.get(),
+                                self.start_x_ent.get(),
+                                self.end_x_ent.get(),
+                                self.start_y_ent.get(),
+                                self.end_y_ent.get(),
+                                self.start_z_ent.get(),
+                                self.end_z_ent.get(),
+                                self.accuracy_ent.get(),
+                                self.error_ent.get()))
         self.apply.place(relx=0.8, rely=0.8)
-        self.delete = Button(self.root, text='Delete',
+        self.delete = tk.Button(self.root, text='Delete',
                              command=lambda: self.delete_equation())
         self.delete.place(relx=0.1, rely=0.8)
-        self.close = Button(self.root, text='Close',
+        self.close = tk.Button(self.root, text='Close',
                             command=lambda: self.close_window())
         self.close.place(relx=0.5, rely=0.8)
-        self.convert_button = Button(self.root, text='Convert',
+        self.convert_button = tk.Button(self.root, text='Convert',
                                      command=lambda: self.convert())
         self.convert_button.place(relx=0.8, rely=0.7)
-        self.error_label = Label(self.root, text='error=')
+        self.error_label = tk.Label(self.root, text='error=')
         self.error_label.place(relx=0.1, rely=0.55)
-        self.error_ent = Entry(self.root, width=5)
+        self.error_ent = tk.Entry(self.root, width=5)
         self.error_ent.place(relx=0.3, rely=0.55)
         if self.cartesian_equation != None:
             self.cartesian_equation_ent.insert(0, self.cartesian_equation)
@@ -314,34 +342,35 @@ class Equation:  # Used for plotting graphs
 
     def parametric_window(self):
         self.parent_window.parametric_equation_windows.append(self)
-        Label(self.root, text='x =', font='Calibri 15').grid(column=0, row=0)
-        Label(self.root, text='y =', font='Calibri 15').grid(column=0, row=1)
-        Label(self.root, text='z =', font='Calibri 15').grid(column=0, row=2)
-        self.x_equation_ent = Entry(self.root, font='Calibri 15')
+        tk.Label(self.root, text='x =', font='Calibri 15').grid(column=0, row=0)
+        tk.Label(self.root, text='y =', font='Calibri 15').grid(column=0, row=1)
+        tk.Label(self.root, text='z =', font='Calibri 15').grid(column=0, row=2)
+        self.x_equation_ent = tk.Entry(self.root, font='Calibri 15')
         self.x_equation_ent.grid(column=1, row=0)
-        self.y_equation_ent = Entry(self.root, font='Calibri 15')
+        self.y_equation_ent = tk.Entry(self.root, font='Calibri 15')
         self.y_equation_ent.grid(column=1, row=1)
-        self.z_equation_ent = Entry(self.root, font='Calibri 15')
+        self.z_equation_ent = tk.Entry(self.root, font='Calibri 15')
         self.z_equation_ent.grid(column=1, row=2)
-        apply = Button(self.root, text='Apply',
-                       command=lambda: self.set_info_parametric(self.x_equation_ent.get(),
-                                                                self.y_equation_ent.get(),
-                                                                self.z_equation_ent.get(),
-                                                                self.start_value_ent.get(),
-                                                                self.end_value_ent.get(),
-                                                                self.accuracy_ent.get()))
+        apply = tk.Button(self.root, text='Apply',
+                       command=lambda: self.set_info_parametric(
+                           self.x_equation_ent.get(),
+                           self.y_equation_ent.get(),
+                           self.z_equation_ent.get(),
+                           self.start_value_ent.get(),
+                           self.end_value_ent.get(),
+                           self.accuracy_ent.get()))
         apply.grid(column=5, row=5)
-        delete = Button(self.root, text='Delete',
+        delete = tk.Button(self.root, text='Delete',
                         command=lambda: self.delete_equation())
         delete.grid(column=1, row=5)
-        close = Button(self.root, text='Close',
+        close = tk.Button(self.root, text='Close',
                        command=lambda: self.close_window())
         close.grid(column=2, row=5)
-        self.start_value_ent = Entry(self.root, width=7, font='Calibri 10')
+        self.start_value_ent = tk.Entry(self.root, width=7, font='Calibri 10')
         self.start_value_ent.grid(column=2, row=3)
-        self.end_value_ent = Entry(self.root, width=7, font='Calibri 10')
+        self.end_value_ent = tk.Entry(self.root, width=7, font='Calibri 10')
         self.end_value_ent.place(relx=0.7, rely=0.65)
-        self.t_range_label = Label(self.root, text='≤ t ≤', font='Calibri 10')
+        self.t_range_label = tk.Label(self.root, text='≤ t ≤', font='Calibri 10')
         self.t_range_label.place(relx=0.6, rely=0.65)
         # Inserts the current values of the variables if they exist
         if self.x_equation is not None:
@@ -353,15 +382,19 @@ class Equation:  # Used for plotting graphs
         self.accuracy_ent.insert(0, self.accuracy)
 
     def convert(self):
-        self.parent_window.equations.remove(self)  # Removes any record of the equation
+        if self in self.parent_window.equations:
+            self.parent_window.equations.remove(
+            self)  # Removes any record of the equation
         for point in self.points:  # Iterates throiugh list of points
             point.equation = None  # Sets equation to None
             self.parent_window.points.append(point)  # Adds point to points
             if self in self.parent_window.selected_equations:  # If the equation was selected,
-                self.parent_window.selected_points.append(point)  # so will the points
+                self.parent_window.selected_points.append(
+                    point)  # so will the points
 
         if self in self.parent_window.selected_equations:
-            self.parent_window.selected_equations.remove(self)  # Removes any record of the equation
+            self.parent_window.selected_equations.remove(
+                self)  # Removes any record of the equation
         self.root.destroy()  # Closes root
 
     # Closes the tkinter root after which the rest of the program will continue to run
@@ -411,15 +444,20 @@ class Equation:  # Used for plotting graphs
         self.points2 = []  # Initialises new list
         try:
             t = self.sliders[len(self.sliders) - 2].variable
-            self.limit1_point2.set_cor(t, eval(syntax_correction(self.y_equation)), 0)
+            self.limit1_point2.set_cor(t,
+                                       eval(syntax_correction(self.y_equation)),
+                                       0)
             t = self.sliders[len(self.sliders) - 1].variable
-            self.limit2_point2.set_cor(t, eval(syntax_correction(self.y_equation)), 0)
+            self.limit2_point2.set_cor(t,
+                                       eval(syntax_correction(self.y_equation)),
+                                       0)
         except:
             pass
 
         # Loops through all the values of 't' in the given range and increment
         if self.type == 'parametric':
-            self.calculate_parametric_points(accuracy, end_value, start_value, x_equation, y_equation, z_equation)
+            self.calculate_parametric_points(accuracy, end_value, start_value,
+                                             x_equation, y_equation, z_equation)
 
         elif self.type == 'cartesian':
             self.calculate_cartesian_points()
@@ -452,7 +490,8 @@ class Equation:  # Used for plotting graphs
                     z = start_z  # Resets z
                     while z <= end_z:
                         try:
-                            equation = list(syntax_correction(self.cartesian_equation))
+                            equation = list(
+                                syntax_correction(self.cartesian_equation))
                             l = len(equation)
                             i = 0
                             while i < l:
@@ -490,7 +529,8 @@ class Equation:  # Used for plotting graphs
                                     # expressions may not be exactly equal
                                     elif (lhs * rhs >= 0
                                           and 1 - (self.error / 100) <=
-                                          abs(lhs / rhs) <= 1 + (self.error / 100)):
+                                          abs(lhs / rhs) <= 1 + (
+                                                  self.error / 100)):
                                         # If loop has reached the last
                                         # expressions then the Point object is created
                                         if i == len(self.listOfSides) - 1:
@@ -518,7 +558,8 @@ class Equation:  # Used for plotting graphs
 
             self.parent_window.get_screen().fill((255, 255, 255))
 
-    def calculate_parametric_points(self, accuracy, end_value, start_value, x_equation, y_equation, z_equation):
+    def calculate_parametric_points(self, accuracy, end_value, start_value,
+                                    x_equation, y_equation, z_equation):
         t = start_value
         tracker = 0
         while t <= end_value:
@@ -590,11 +631,13 @@ class Equation:  # Used for plotting graphs
             t = self.limit1
             self.limit1Point1.set_cor(self.limit1, 0, 0)
             self.limit1_point2.set_cor(self.limit1,
-                                       eval(syntax_correction(self.y_equation)), 0)
+                                       eval(syntax_correction(self.y_equation)),
+                                       0)
             t = self.limit2
             self.limit2Point1.set_cor(self.limit2, 0, 0)
             self.limit2_point2.set_cor(self.limit2,
-                                       eval(syntax_correction(self.y_equation)), 0)
+                                       eval(syntax_correction(self.y_equation)),
+                                       0)
         except:
             pass
 
@@ -608,7 +651,8 @@ class Equation:  # Used for plotting graphs
         c = self.c
         d = self.d
         self.cartesian_equation = cartesian_equation  # Expression to calculate points
-        cartesian_equation = syntax_correction(cartesian_equation)  # Equation in Python syntax
+        cartesian_equation = syntax_correction(
+            cartesian_equation)  # Equation in Python syntax
 
         # Assigns attributes to the values given by user
         self.start_x = startX
@@ -620,7 +664,8 @@ class Equation:  # Used for plotting graphs
         self.accuracy = accuracy
         self.error = eval(error)
 
-        self.listOfSides = cartesian_equation.split("=")  # Lists of individual expressions
+        self.listOfSides = cartesian_equation.split(
+            "=")  # Lists of individual expressions
 
         self.parent_window.showFact()  # Shows an interesting fact while calculating points
         self.calculate_points()  # Calculates points

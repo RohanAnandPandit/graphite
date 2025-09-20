@@ -1,19 +1,20 @@
-from buttons import Buttons
-from slider import Slider
-from image import Image
-from point import Point
-from line import Line
-from equation import Equation
-from utils import *
-from maths.transformations import *
-from maths.matrices import *
-from maths.math_functions import *
-from maths.math_constants import *
-from math import pi
-from string_formatting import syntax_correction, entry_formatter, substitute_values
 from tkinter import *
-import utils
 import pygame
+from random import randint
+
+from .button import Button
+from .slider import Slider
+from .point import Point
+from .line import Line
+from .equation import Equation
+from . import utils
+from .utils import colours, show_multiline_text, show_text, show_image, IMAGES_PATH
+from .maths.transformations import *
+from .maths.matrices import *
+from .maths.math_functions import *
+from .maths.math_constants import *
+from .string_formatting import syntax_correction, entry_formatter, \
+    substitute_values
 
 
 class Graph:
@@ -148,11 +149,15 @@ class Graph:
         width, height = 100, 50
         self.sliders = [Slider('radius', 'radius', x, y, 1, 20, self,
                                self, width, height, 'integers', 10),
-                        Slider('rotation angle', 'rotationAngle', x + 2 * width, y,
-                               4, 90, self, self, width, height, 'integers', 30),
-                        Slider('t', 't', x + 4 * width, y, -10, 10, self, self, width,
+                        Slider('rotation angle', 'rotationAngle', x + 2 * width,
+                               y,
+                               4, 90, self, self, width, height, 'integers',
+                               30),
+                        Slider('t', 't', x + 4 * width, y, -10, 10, self, self,
+                               width,
                                height, '', 0),
-                        Slider('random speed', 'randomSpeed', x + 6 * width, y, 0,
+                        Slider('random speed', 'randomSpeed', x + 6 * width, y,
+                               0,
                                10, self, self, width, height, 'integers', 5)]
 
         self.notes = False  # Determines which mode to switch to
@@ -192,7 +197,8 @@ class Graph:
     def create_settings_window(self):
         self.settings_window = Tk()
         self.settings_window.title('Settings')
-        self.settings_window.geometry('400x500+' + str(int(self.width / 2)) + '+' + str(int(0)))
+        self.settings_window.geometry(
+            '400x500+' + str(int(self.width / 2)) + '+' + str(int(0)))
         self.settings_window.attributes('-topmost', True)
 
         trace_label = Label(self.settings_window, text="Trace Settings")
@@ -203,7 +209,8 @@ class Graph:
                                       text="Gradient colouring", variable=a,
                                       onvalue=True, offvalue=False,
                                       command=lambda a=a,
-                                                     self=self: exec("self.gradient_for_trace = a.get()"))
+                                                     self=self: exec(
+                                          "self.gradient_for_trace = a.get()"))
         gradient_button.grid(row=1, column=0)
         if self.gradient_for_trace:
             gradient_button.select()
@@ -213,7 +220,8 @@ class Graph:
                                    text="Trail effect", variable=b,
                                    onvalue=True, offvalue=False,
                                    command=lambda b=b,
-                                                  self=self: exec("self.trail_effect = b.get()"))
+                                                  self=self: exec(
+                                       "self.trail_effect = b.get()"))
         trail_button.grid(row=2, column=0)
         if self.trail_effect:
             trail_button.select()
@@ -223,7 +231,8 @@ class Graph:
                                   text="Draw lines", variable=c,
                                   onvalue=True, offvalue=False,
                                   command=lambda c=c,
-                                                 self=self: exec("self.line_for_trace = c.get()"))
+                                                 self=self: exec(
+                                      "self.line_for_trace = c.get()"))
         line_button.grid(row=3, column=0)
         if self.line_for_trace:
             line_button.select()
@@ -233,7 +242,8 @@ class Graph:
                                     text="Repeat trace", variable=d,
                                     onvalue=True, offvalue=False,
                                     command=lambda d=d,
-                                                   self=self: exec("self.repeat_trace = d.get()"))
+                                                   self=self: exec(
+                                        "self.repeat_trace = d.get()"))
         repeat_button.grid(row=4, column=0)
         if self.repeat_trace:
             repeat_button.select()
@@ -244,7 +254,8 @@ class Graph:
                                     text="Numberline", variable=e,
                                     onvalue=True, offvalue=False,
                                     command=lambda e=e,
-                                                   self=self: exec("self.show_number_line = e.get()"))
+                                                   self=self: exec(
+                                        "self.show_number_line = e.get()"))
 
         number_button.grid(row=7, column=0)
 
@@ -255,7 +266,8 @@ class Graph:
                                     text="X-Y plane", variable=f,
                                     onvalue=True, offvalue=False,
                                     command=lambda f=f,
-                                                   self=self: exec("self.show_xy_axes = f.get()"))
+                                                   self=self: exec(
+                                        "self.show_xy_axes = f.get()"))
         number_button.grid(row=9, column=0)
 
         g = BooleanVar()
@@ -264,7 +276,8 @@ class Graph:
                                     text="X-Z plane", variable=g,
                                     onvalue=True, offvalue=False,
                                     command=lambda g=g,
-                                                   self=self: exec("self.show_xz_axes = g.get()"))
+                                                   self=self: exec(
+                                        "self.show_xz_axes = g.get()"))
         number_button.grid(row=9, column=1)
 
         h = BooleanVar()
@@ -273,7 +286,8 @@ class Graph:
                                     text="Y-Z plane", variable=h,
                                     onvalue=True, offvalue=False,
                                     command=lambda h=h,
-                                                   self=self: exec("self.show_yz_axes = h.get()"))
+                                                   self=self: exec(
+                                        "self.show_yz_axes = h.get()"))
         number_button.grid(row=10, column=0)
 
         if self.show_number_line:
@@ -284,21 +298,25 @@ class Graph:
         # self.parent_app.getScreen().blit(img, (int(self.width*0.4),int(self.height*0.2)))
         show_multiline_text(self.parent_app.get_screen(),
                             'Please wait while we calculate the points on your graph. Thank You',
-                            int(self.width / 2), 10, (0, 0, 0), (200, 200, 200), 35)
+                            int(self.width / 2), 10, (0, 0, 0), (200, 200, 200),
+                            35)
         if self.fact:
             # self.fact = False
             randNum = randint(0, len(self.factList) - 1)
             y = int(self.height / 2)
             show_multiline_text(self.parent_app.get_screen(),
                                 'Please wait while we calculate the points on your graph. Thank You',
-                                int(self.width / 2), y - 50, (0, 0, 0), (200, 200, 200), 35)
-            show_multiline_text(self.parent_app.get_screen(), self.factList[randNum], int(self.width / 2), y,
+                                int(self.width / 2), y - 50, (0, 0, 0),
+                                (200, 200, 200), 35)
+            show_multiline_text(self.parent_app.get_screen(),
+                                self.factList[randNum], int(self.width / 2), y,
                                 (0, 0, 0), (200, 200, 200), 35)
         else:
             jokes = ['Joke1']
             # self.fact  = True
             i = randint(1, 5)
-            show_image(self.parent_app.get_screen(), 'Joke' + str(i), self.width / 4, 50)
+            show_image(self.parent_app.get_screen(), 'Joke' + str(i),
+                       self.width / 4, 50)
         pygame.display.update()
 
     # Takes the relevant information, gets the required transformation matrix and transforms the point
@@ -324,7 +342,8 @@ class Graph:
 
             for line in self.selected_lines:  # Iterates through all the selected lines
                 # Combines transformations for individual lines by multiplying the matrices
-                matrix = matrix_multiply(matrix, rotation_about_line(prop2, line))
+                matrix = matrix_multiply(matrix,
+                                         rotation_about_line(prop2, line))
 
         return matrix
 
@@ -336,87 +355,126 @@ class Graph:
     #  List of all the buttons and their properties which are created at the start of the program
     def create_buttons(self):
 
-        list_of_images = ["/Close", "/Point", "/Parametric Equation", "/Cartesian Equation", "/Line", "/Rotation",
-                          "/Reflection", "/Scale", "/Coordinates", "/Coordinates", "/Reset View", "/Zoom In",
+        list_of_images = ["/Close", "/Point", "/Parametric Equation",
+                          "/Cartesian Equation", "/Line", "/Rotation",
+                          "/Reflection", "/Scale", "/Coordinates",
+                          "/Coordinates", "/Reset View", "/Zoom In",
                           "/Zoom Out"]
         # [title       ,text              ,x   ,y   ,width ,height ,radius ,shape,     font_size, font_colour      ,
         # border_colour,    bg_colour,       parent_window, image_file]
         listOfButtons = [
-            ['Image', 'Image', self.width - 50, 1, 50, 50, None, 'rectangle', 30, colours['black'], colours['black'],
+            ['Image', 'Image', self.width - 50, 1, 50, 50, None, 'rectangle',
+             30, colours['black'], colours['black'],
              colours['white'], ''],
-            ['Add Point', 'Add,Point', 50, 40, 50, 50, None, 'rectangle', 30, colours['black'], colours['black'],
+            ['Add Point', 'Add,Point', 50, 40, 50, 50, None, 'rectangle', 30,
+             colours['black'], colours['black'],
              colours['white'], 'Point'],
-            ['Parametric Equation', 'Parametric,Equation', 100, 40, 50, 50, None, 'rectangle', 30, colours['black'],
+            ['Parametric Equation', 'Parametric,Equation', 100, 40, 50, 50,
+             None, 'rectangle', 30, colours['black'],
              colours['black'], colours['white'], 'Parametric Equation'],
-            ['Cartesian Equation', 'Cartesian,Equation', 150, 40, 50, 50, None, 'rectangle', 30, colours['black'],
+            ['Cartesian Equation', 'Cartesian,Equation', 150, 40, 50, 50, None,
+             'rectangle', 30, colours['black'],
              colours['black'], colours['white'], 'Cartesian Equation'],
-            ['Add Line', 'Add,Line', 200, 40, 50, 50, None, 'rectangle', 30, colours['black'], colours['black'],
+            ['Add Line', 'Add,Line', 200, 40, 50, 50, None, 'rectangle', 30,
+             colours['black'], colours['black'],
              colours['white'], 'Line'],
-            ['Rotation', 'Rotation', 250, 40, 50, 50, None, 'rectangle', 30, colours['black'], colours['black'],
+            ['Rotation', 'Rotation', 250, 40, 50, 50, None, 'rectangle', 30,
+             colours['black'], colours['black'],
              colours['white'], 'Rotation'],
-            ['Reflection', 'Reflection', 300, 40, 50, 50, None, 'rectangle', 30, colours['black'], colours['black'],
+            ['Reflection', 'Reflection', 300, 40, 50, 50, None, 'rectangle', 30,
+             colours['black'], colours['black'],
              colours['white'], 'Reflection'],
-            ['Scale', 'Scale', 350, 40, 50, 50, None, 'rectangle', 30, colours['black'], colours['black'],
+            ['Scale', 'Scale', 350, 40, 50, 50, None, 'rectangle', 30,
+             colours['black'], colours['black'],
              colours['white'], 'Scale'],
-            ['Coordinates', 'Show,Coordinates', 400, 40, 50, 50, None, 'rectangle', 30, colours['black'],
+            ['Coordinates', 'Show,Coordinates', 400, 40, 50, 50, None,
+             'rectangle', 30, colours['black'],
              colours['black'], colours['white'], 'Coordinates'],
-            ['Axes Display', 'Hide,Axes', 450, 40, 50, 50, None, 'rectangle', 30, colours['black'], colours['black'],
+            ['Axes Display', 'Hide,Axes', 450, 40, 50, 50, None, 'rectangle',
+             30, colours['black'], colours['black'],
              colours['white'], 'Coordinates'],
-            ['Reset View', 'Reset,View', self.width - 60, self.height - 50, 50, 50, None, 'rectangle', 30,
-             colours['black'], colours['black'], colours['white'], 'Reset View'],
-            ['Zoom In', 'Zoom,In', self.width - 60, self.height - 150, 50, 50, None, 'rectangle', 30, colours['black'],
+            ['Reset View', 'Reset,View', self.width - 60, self.height - 50, 50,
+             50, None, 'rectangle', 30,
+             colours['black'], colours['black'], colours['white'],
+             'Reset View'],
+            ['Zoom In', 'Zoom,In', self.width - 60, self.height - 150, 50, 50,
+             None, 'rectangle', 30, colours['black'],
              colours['black'], colours['white'], 'Zoom In'],
-            ['Zoom Out', 'Zoom,Out', self.width - 60, self.height - 100, 50, 50, None, 'rectangle', 30,
+            ['Zoom Out', 'Zoom,Out', self.width - 60, self.height - 100, 50, 50,
+             None, 'rectangle', 30,
              colours['black'], colours['black'], colours['white'], 'Zoom Out'],
-            ['NegativeXTranslation', '-X', self.width - 90, 90, 120, 30, 30, 'circle', 30, colours['black'],
+            ['NegativeXTranslation', '-X', self.width - 90, 90, 120, 30, 30,
+             'circle', 30, colours['black'],
              colours['red'], colours['white'], ''],
-            ['PositiveXTranslation', '+X', self.width - 30, 90, 120, 30, 30, 'circle', 30, colours['black'],
+            ['PositiveXTranslation', '+X', self.width - 30, 90, 120, 30, 30,
+             'circle', 30, colours['black'],
              colours['red'], colours['white'], ''],
-            ['NegativeYTranslation', '-Y', self.width - 90, 150, 120, 30, 30, 'circle', 30, colours['black'],
+            ['NegativeYTranslation', '-Y', self.width - 90, 150, 120, 30, 30,
+             'circle', 30, colours['black'],
              colours['green'], colours['white'], ''],
-            ['PositiveYTranslation', '+Y', self.width - 30, 150, 120, 30, 30, 'circle', 30, colours['black'],
+            ['PositiveYTranslation', '+Y', self.width - 30, 150, 120, 30, 30,
+             'circle', 30, colours['black'],
              colours['green'], colours['white'], ''],
-            ['NegativeZTranslation', '-Z', self.width - 90, 210, 120, 30, 30, 'circle', 30, colours['black'],
+            ['NegativeZTranslation', '-Z', self.width - 90, 210, 120, 30, 30,
+             'circle', 30, colours['black'],
              colours['blue'], colours['white'], ''],
-            ['PositiveZTranslation', '+Z', self.width - 30, 210, 120, 30, 30, 'circle', 30, colours['black'],
+            ['PositiveZTranslation', '+Z', self.width - 30, 210, 120, 30, 30,
+             'circle', 30, colours['black'],
              colours['blue'], colours['white'], ''],
-            ['Select', 'Select', 500, 40, 50, 50, None, 'rectangle', 30, colours['black'], colours['black'],
+            ['Select', 'Select', 500, 40, 50, 50, None, 'rectangle', 30,
+             colours['black'], colours['black'],
              colours['white'], 'Select'],
-            ['Drop Points', 'Drop,Points', 550, 40, 50, 50, None, 'rectangle', 30, colours['black'], colours['black'],
+            ['Drop Points', 'Drop,Points', 550, 40, 50, 50, None, 'rectangle',
+             30, colours['black'], colours['black'],
              colours['white'], 'Drop Points'],
-            ['Brownian Motion', 'Brownian,Motion', 600, 40, 50, 50, None, 'rectangle', 30, colours['black'],
+            ['Brownian Motion', 'Brownian,Motion', 600, 40, 50, 50, None,
+             'rectangle', 30, colours['black'],
              colours['black'], colours['white'], 'Brownian Motion'],
-            ['Grid Lines', 'Hide,Grid', 650, 40, 50, 50, None, 'rectangle', 30, colours['black'], colours['black'],
+            ['Grid Lines', 'Hide,Grid', 650, 40, 50, 50, None, 'rectangle', 30,
+             colours['black'], colours['black'],
              colours['white'], 'Grid'],
-            ['Turn Right', 'Turn Right   ', self.width - 60, self.height - 250, 50, 50, None, 'rectangle', 30,
+            ['Turn Right', 'Turn Right   ', self.width - 60, self.height - 250,
+             50, 50, None, 'rectangle', 30,
              colours['black'], colours['black'], colours['white'], ''],
-            ['Turn Left', 'Turn Left    ', self.width - 60, self.height - 300, 50, 50, None, 'rectangle', 30,
+            ['Turn Left', 'Turn Left    ', self.width - 60, self.height - 300,
+             50, 50, None, 'rectangle', 30,
              colours['black'], colours['black'], colours['white'], ''],
-            ['Turn Up', 'Turn Up   ', self.width - 60, self.height - 350, 50, 50, None, 'rectangle', 30,
+            ['Turn Up', 'Turn Up   ', self.width - 60, self.height - 350, 50,
+             50, None, 'rectangle', 30,
              colours['black'], colours['black'], colours['white'], ''],
-            ['Turn Down', 'Turn Down    ', self.width - 60, self.height - 400, 50, 50, None, 'rectangle', 30,
+            ['Turn Down', 'Turn Down    ', self.width - 60, self.height - 400,
+             50, 50, None, 'rectangle', 30,
              colours['black'], colours['black'], colours['white'], ''],
-            ['Delete', 'Delete,Selection,', 700, 40, 50, 50, None, 'rectangle', 30, colours['black'], colours['black'],
+            ['Delete', 'Delete,Selection,', 700, 40, 50, 50, None, 'rectangle',
+             30, colours['black'], colours['black'],
              colours['white'], 'Delete'],
-            ['Background', 'Dark,Mode', 750, 40, 50, 50, None, 'rectangle', 30, colours['black'], colours['black'],
+            ['Background', 'Dark,Mode', 750, 40, 50, 50, None, 'rectangle', 30,
+             colours['black'], colours['black'],
              colours['white'], 'Background'],
-            ['Left Click Toggle', 'Rotate,View', 800, 40, 50, 50, None, 'rectangle', 30, colours['black'],
+            ['Left Click Toggle', 'Rotate,View', 800, 40, 50, 50, None,
+             'rectangle', 30, colours['black'],
              colours['black'], colours['white'], 'Left Click Toggle'],
-            ['Notes', 'Notes', 850, 40, 50, 50, None, 'rectangle', 30, colours['black'], colours['black'],
+            ['Notes', 'Notes', 850, 40, 50, 50, None, 'rectangle', 30,
+             colours['black'], colours['black'],
              colours['white'], 'Pen'],
-            ['Clear', 'Clear', self.width - 60, self.height - 200, 50, 50, None, 'rectangle', 30, colours['black'],
+            ['Clear', 'Clear', self.width - 60, self.height - 200, 50, 50, None,
+             'rectangle', 30, colours['black'],
              colours['black'], colours['white'], ''],
-            ['Trace', 'Hide Trace', self.width - 60, self.height - 450, 50, 50, None, 'rectangle', 30, colours['black'],
+            ['Trace', 'Hide Trace', self.width - 60, self.height - 450, 50, 50,
+             None, 'rectangle', 30, colours['black'],
              colours['black'], colours['white'], ''],
-            ['LOBF', 'Show,LOBF', self.width - 100, 0, 50, 50, None, 'rectangle', 30, colours['black'],
+            ['LOBF', 'Show,LOBF', self.width - 100, 0, 50, 50, None,
+             'rectangle', 30, colours['black'],
              colours['black'], colours['white'], ''],
-            ['Settings', 'Settings', self.width - 150, 0, 50, 50, None, 'rectangle', 30, colours['black'],
+            ['Settings', 'Settings', self.width - 150, 0, 50, 50, None,
+             'rectangle', 30, colours['black'],
              colours['black'], colours['white'], 'gear']]
 
         for button in listOfButtons:
-            button_object = Buttons(button[0], button[1], button[2], button[3],
+            button_object =Button(button[0], button[1], button[2], button[3],
                                     button[4], button[5], button[6], button[7],
-                                    button[8], button[9], button[10], button[11],
+                                    button[8], button[9], button[10],
+                                    button[11],
                                     self, button[12])
             self.buttons.append(button_object)
 
@@ -591,7 +649,7 @@ class Graph:
                         if (point.mouse_over_point()
                                 and point.equation is None):
                             if not point.window_open:
-                                point.root()
+                                point.window()
                         if (point.slider.mouse_over_slider()
                                 and point in self.selected_points
                                 and len(self.selected_points) == 1):
@@ -603,13 +661,13 @@ class Graph:
                         if equation != self.line_of_best_fit:
                             if (equation.mouse_over_graph()
                                     and not equation.window_open):
-                                equation.root()
+                                equation.window()
                             for slider in equation.sliders:
                                 if (slider.mouse_over_slider()
                                         and (equation in self.selected_equations
                                              or len(self.equations) == 1)):
                                     if not slider.window_open:
-                                        slider.root()
+                                        slider.window()
 
                     for slider in self.sliders:
                         if (slider.mouse_over_slider()
@@ -733,10 +791,15 @@ class Graph:
         for point in self.points:  # Iterates through all the individual points
             if point.equation is None:  # Checks if the onscreen x and y coordinates are in the region of the
                 # rectangle selected by the user
-                if (min(self.selection_point1[0], self.selection_point2[0]) <= point.screen_pos[0] <= max(
-                        self.selection_point1[0], self.selection_point2[0])
-                        and min(self.selection_point1[1], self.selection_point2[1]) <= point.screen_pos[1] <= max(
-                            self.selection_point1[1], self.selection_point2[1])):
+                if (min(self.selection_point1[0], self.selection_point2[0]) <=
+                        point.screen_pos[0] <= max(
+                                self.selection_point1[0],
+                                self.selection_point2[0])
+                        and min(self.selection_point1[1],
+                                self.selection_point2[1]) <= point.screen_pos[
+                            1] <= max(
+                            self.selection_point1[1],
+                            self.selection_point2[1])):
                     if point not in self.selected_points:  # Selects point if not already in the list
                         self.selected_points.append(point)
                     else:  # If the point is already in the list then it is removed
@@ -748,7 +811,8 @@ class Graph:
         if 'Rotation' in self.active_transformations:
             info = 'Press the <- and -> keys to rotate about the y-axis,Press the up and down keys to rotate about ' \
                    'the x-axis,Press the Z and X to rotate about the z-axis '
-            show_multiline_text(self.parent_app.get_screen(), info, int(self.width / 2),
+            show_multiline_text(self.parent_app.get_screen(), info,
+                                int(self.width / 2),
                                 110, (0, 0, 0), (200, 200, 200), 30)
             transformation = None
             if pygame.key.get_pressed()[pygame.K_RIGHT] != 0:
@@ -791,15 +855,18 @@ class Graph:
         if 'Reflection' in self.active_transformations:
             if (pygame.key.get_pressed()[pygame.K_a] != 0
                     or pygame.key.get_pressed()[pygame.K_d] != 0):
-                self.transformationParametersList.append(['Reflection', 'x', None, None])
+                self.transformationParametersList.append(
+                    ['Reflection', 'x', None, None])
 
             if (pygame.key.get_pressed()[pygame.K_w] != 0
                     or pygame.key.get_pressed()[pygame.K_s] != 0):
-                self.transformationParametersList.append(['Reflection', 'y', None, None])
+                self.transformationParametersList.append(
+                    ['Reflection', 'y', None, None])
 
             if (pygame.key.get_pressed()[pygame.K_q] != 0
                     or pygame.key.get_pressed()[pygame.K_e] != 0):
-                self.transformationParametersList.append(['Reflection', 'z', None, None])
+                self.transformationParametersList.append(
+                    ['Reflection', 'z', None, None])
         else:
             if pygame.key.get_pressed()[pygame.K_a]:
                 self.x_translation -= 5
@@ -858,9 +925,11 @@ class Graph:
             matrix = self.get_transformation_matrix(transformationParameters[0],
                                                     transformationParameters[1],
                                                     transformationParameters[2],
-                                                    transformationParameters[3])  # Gets matrix
+                                                    transformationParameters[
+                                                        3])  # Gets matrix
             # Multiplies matrices to combines into single matrix
-            self.point_transformation = matrix_multiply(self.point_transformation, matrix)
+            self.point_transformation = matrix_multiply(
+                self.point_transformation, matrix)
 
         self.transformationParametersList = []  # Resets list to empty for next cycle
 
@@ -868,15 +937,21 @@ class Graph:
         for point in self.points:  # Iterates through all points
             point.calculate_screen_pos()
             if self.selection_point1 != () and point.visible():  # Checks if point is within the selected region
-                if (min(self.selection_point1[0], pygame.mouse.get_pos()[0]) <= point.screen_pos[0] <= max(
-                        self.selection_point1[0], pygame.mouse.get_pos()[0])
-                        and min(self.selection_point1[1], pygame.mouse.get_pos()[1]) <= point.screen_pos[1] <= max(
-                            self.selection_point1[1], pygame.mouse.get_pos()[1])):
+                if (min(self.selection_point1[0], pygame.mouse.get_pos()[0]) <=
+                        point.screen_pos[0] <= max(
+                                self.selection_point1[0],
+                                pygame.mouse.get_pos()[0])
+                        and min(self.selection_point1[1],
+                                pygame.mouse.get_pos()[1]) <= point.screen_pos[
+                            1] <= max(
+                            self.selection_point1[1],
+                            pygame.mouse.get_pos()[1])):
 
                     if not self.unselect:  # If the user is selecting
                         # If the point is not already selected
                         if point not in self.selected_points:
-                            self.selected_points.append(point)  # it is added to the list
+                            self.selected_points.append(
+                                point)  # it is added to the list
                             # To determine whether the poimt has been selected
                             # during current session
                             self.temp_selected_points.append(point)
@@ -891,13 +966,15 @@ class Graph:
                     if not self.unselect:  # If user is selecting
                         # If the point had been selected in this session
                         if point in self.temp_selected_points:
-                            self.selected_points.remove(point)  # It is unselected
+                            self.selected_points.remove(
+                                point)  # It is unselected
                             self.temp_selected_points.remove(point)
 
                     else:  # If user is unselecting
                         # If the point has been unselected during this session
                         if point in self.temp_selected_points:
-                            self.selected_points.append(point)  # If selected again
+                            self.selected_points.append(
+                                point)  # If selected again
                             self.temp_selected_points.remove(point)
 
             if self.show_trace:
@@ -907,7 +984,8 @@ class Graph:
                     # Creates new list with only coordinates of points
                     list_of_cor = list(map(lambda x: x.cor, point.trace_points))
 
-                cor = (point.x, point.y, point.z)  # Current coordinates of point
+                cor = (
+                point.x, point.y, point.z)  # Current coordinates of point
 
                 if cor not in list_of_cor:  # Avoids duplication
                     if point.x is not None:
@@ -927,10 +1005,10 @@ class Graph:
 
             point.draw_trace()
 
-            if point.window_open:
-                pygame.draw.aaline(self.parent_app.get_screen(), point.colour,
-                                   point.screen_pos,
-                                   (point.create_settings_window.winfo_x(), point.create_settings_window.winfo_y()))
+            # if point.window_open:
+            #     pygame.draw.aaline(self.parent_app.get_screen(), point.colour,
+            #                        point.screen_pos,
+            #                        (point.create_settings_window.winfo_x(), point.create_settings_window.winfo_y()))
 
     def update_lines(self):
         for line in self.lines:
@@ -954,7 +1032,8 @@ class Graph:
         while height + rect_height > 0:
             if colour > 255:
                 break
-            pygame.draw.rect(self.parent_app.get_screen(), (colour, colour, colour),
+            pygame.draw.rect(self.parent_app.get_screen(),
+                             (colour, colour, colour),
                              (0, height, self.width, rect_height), 0)
             height -= rect_height
             colour = 255 - int(255 * (height / self.height))
@@ -974,21 +1053,33 @@ class Graph:
                              self.z1.screen_pos, self.z2.screen_pos, 3)
 
             # Labels each end of the axes with the required letter
-            show_multiline_text(self.parent_app.get_screen(), '-X', self.x1.screen_pos[0],
-                                self.x1.screen_pos[1], (0, 0, 0), (200, 200, 200), 30)
-            show_multiline_text(self.parent_app.get_screen(), '+X', self.x2.screen_pos[0],
-                                self.x2.screen_pos[1], (0, 0, 0), (200, 200, 200), 30)
+            show_multiline_text(self.parent_app.get_screen(), '-X',
+                                self.x1.screen_pos[0],
+                                self.x1.screen_pos[1], (0, 0, 0),
+                                (200, 200, 200), 30)
+            show_multiline_text(self.parent_app.get_screen(), '+X',
+                                self.x2.screen_pos[0],
+                                self.x2.screen_pos[1], (0, 0, 0),
+                                (200, 200, 200), 30)
 
-            show_multiline_text(self.parent_app.get_screen(), '-Y', self.y1.screen_pos[0],
-                                self.y1.screen_pos[1], (0, 0, 0), (200, 200, 200), 30)
-            show_multiline_text(self.parent_app.get_screen(), '+Y', self.y2.screen_pos[0],
-                                self.y2.screen_pos[1], (0, 0, 0), (200, 200, 200), 30)
+            show_multiline_text(self.parent_app.get_screen(), '-Y',
+                                self.y1.screen_pos[0],
+                                self.y1.screen_pos[1], (0, 0, 0),
+                                (200, 200, 200), 30)
+            show_multiline_text(self.parent_app.get_screen(), '+Y',
+                                self.y2.screen_pos[0],
+                                self.y2.screen_pos[1], (0, 0, 0),
+                                (200, 200, 200), 30)
 
             if (self.x_rotation, self.y_rotation) != (0.0, 0.0):
-                show_multiline_text(self.parent_app.get_screen(), '+Z', self.z1.screen_pos[0],
-                                    self.z1.screen_pos[1], (0, 0, 0), (200, 200, 200), 30)
-                show_multiline_text(self.parent_app.get_screen(), '-Z', self.z2.screen_pos[0],
-                                    self.z2.screen_pos[1], (0, 0, 0), (200, 200, 200), 30)
+                show_multiline_text(self.parent_app.get_screen(), '+Z',
+                                    self.z1.screen_pos[0],
+                                    self.z1.screen_pos[1], (0, 0, 0),
+                                    (200, 200, 200), 30)
+                show_multiline_text(self.parent_app.get_screen(), '-Z',
+                                    self.z2.screen_pos[0],
+                                    self.z2.screen_pos[1], (0, 0, 0),
+                                    (200, 200, 200), 30)
 
     def draw_grid_lines(self):
         for line in self.grid_lines:
@@ -1018,13 +1109,15 @@ class Graph:
         elif self.rotate_axes and self.axes_rotation_mouse_pos:  # Checks if the axes need to be rotated
             self.y_rotation = (self.prev_y_rotation +
                                360 * (pygame.mouse.get_pos()[0] -
-                                      self.axes_rotation_mouse_pos[0]) / self.width) % 360
+                                      self.axes_rotation_mouse_pos[
+                                          0]) / self.width) % 360
             # This takes the previous angle by which the axes were rotated and then adds the additional angle which
             # is determined by the percentage of the distance between the point that the user pressed the middle
             # button and the current position of the mouse
             self.x_rotation = (self.prev_x_rotation +
                                360 * (pygame.mouse.get_pos()[1] -
-                                      self.axes_rotation_mouse_pos[1]) / self.width) % 360
+                                      self.axes_rotation_mouse_pos[
+                                          1]) / self.width) % 360
             self.two_d_mode = False
 
         # self.axesTransformation =  matrixMultiply(scale(self.XAxesSf,self.YAxesSf,self.ZAxesSf),rotation(
@@ -1032,10 +1125,12 @@ class Graph:
         self.axes_transformation = rotation(self.x_rotation, 'x')
 
         self.axes_transformation = matrix_multiply(self.axes_transformation,
-                                                   rotation(self.y_rotation, 'y'))
+                                                   rotation(self.y_rotation,
+                                                            'y'))
 
         self.axes_transformation = matrix_multiply(self.axes_transformation,
-                                                   rotation(self.zRotation, 'z'))
+                                                   rotation(self.zRotation,
+                                                            'z'))
 
         self.axes_transformation = matrix_multiply(self.axes_transformation,
                                                    scale(self.x_axes_sf,
@@ -1080,9 +1175,10 @@ class Graph:
         width = pygame.mouse.get_pos()[0] - self.selection_point1[0]
         height = pygame.mouse.get_pos()[1] - self.selection_point1[1]
 
-        pygame.draw.rect(self.parent_app.get_screen(), colour, (self.selection_point1[0],
-                                                                self.selection_point1[1],
-                                                                width, height), 2)
+        pygame.draw.rect(self.parent_app.get_screen(), colour,
+                         (self.selection_point1[0],
+                          self.selection_point1[1],
+                          width, height), 2)
 
     def update_buttons(self):
         for button in self.buttons:
@@ -1095,23 +1191,31 @@ class Graph:
                 if button.shape == 'rectangle':
                     # button.parent_window.showText(button.text, int(button.x+button.width/2),
                     # int(button.y+button.height/2), button.font_colour, button.bg_colour, button.font_size+5)
-                    y = button.y + button.height + 7 * len(button.text.split(','))
+                    y = button.y + button.height + 7 * len(
+                        button.text.split(','))
                     show_multiline_text(self.parent_app.get_screen(),
-                                        button.text, int(button.x + button.width / 2),
-                                        y, (0, 0, 0), (255, 255, 255), button.font_size + 5)
+                                        button.text,
+                                        int(button.x + button.width / 2),
+                                        y, (0, 0, 0), (255, 255, 255),
+                                        button.font_size + 5)
 
                 elif button.shape == 'circle':
-                    show_multiline_text(self.parent_app.get_screen(), button.text, button.x, button.y,
-                                        button.font_colour, button.bg_colour, button.font_size + 5)
+                    show_multiline_text(self.parent_app.get_screen(),
+                                        button.text, button.x, button.y,
+                                        button.font_colour, button.bg_colour,
+                                        button.font_size + 5)
                 # mouseImg = pygame.image.load('Mouse hand.png')
                 # self.parent_app.getScreen().blit(mouseImg, pygame.mouse.get_pos())
 
         for button in self.buttons:
             # Keeps on translating the points as long as the button is held down
             if (button.leftHold
-                    and button.title in ['PositiveXTranslation', 'NegativeXTranslation',
-                                         'PositiveYTranslation', 'NegativeYTranslation',
-                                         'PositiveZTranslation', 'NegativeZTranslation',
+                    and button.title in ['PositiveXTranslation',
+                                         'NegativeXTranslation',
+                                         'PositiveYTranslation',
+                                         'NegativeYTranslation',
+                                         'PositiveZTranslation',
+                                         'NegativeZTranslation',
                                          'Zoom In', 'Zoom Out']):
                 button.left_click_command()
 
@@ -1184,19 +1288,27 @@ class Graph:
         if equation is not None:
             if equation.type == 'parametric':
                 show_text(self.parent_app.get_screen(),
-                          'x = ' + substitute_values(equation, equation.xEquation) + ' | y = ' + substitute_values(
-                              equation, equation.yEquation) + ' | z = ' + substitute_values(equation,
-                                                                                            equation.zEquation),
-                          self.width / 2, self.height - 180, equation.colour, (255, 255, 255), 20)
+                          'x = ' + substitute_values(equation,
+                                                     equation.x_equation) + ' | y = ' + substitute_values(
+                              equation,
+                              equation.y_equation) + ' | z = ' + substitute_values(
+                              equation,
+                              equation.z_equation),
+                          self.width / 2, self.height - 180, equation.colour,
+                          (255, 255, 255), 20)
             else:
-                show_text(self.parent_app.get_screen(), equation.cartesianEquation, self.width / 2,
-                          self.height - 180, equation.colour, (255, 255, 255), 20)
+                show_text(self.parent_app.get_screen(),
+                          equation.cartesian_equation, self.width / 2,
+                          self.height - 180, equation.colour, (255, 255, 255),
+                          20)
 
         if self.line_of_best_fit.mouse_over_graph():
             equation = self.line_of_best_fit
             show_text(self.parent_app.get_screen(),
-                      'x = ' + substitute_values(equation, equation.x_equation) + ' | y = ' + substitute_values(equation,
-                                                                                                                equation.y_equation) + ' | z = ' + substitute_values(
+                      'x = ' + substitute_values(equation,
+                                                 equation.x_equation) + ' | y = ' + substitute_values(
+                          equation,
+                          equation.y_equation) + ' | z = ' + substitute_values(
                           equation, equation.z_equation),
                       pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1],
                       equation.colour, (255, 255, 255), 20)
@@ -1219,8 +1331,10 @@ class Graph:
                         if (slider.text in ['limit1', 'limit2']
                                 and equation.xEquation == 't' and equation.zEquation == '0'):
 
-                            slider.start_value = eval(syntax_correction(equation.startValue))
-                            slider.end_value = eval(syntax_correction(equation.endValue))
+                            slider.start_value = eval(
+                                syntax_correction(equation.startValue))
+                            slider.end_value = eval(
+                                syntax_correction(equation.endValue))
                             slider.draw_slider()
 
                             equation.limit1Point1.calculate_screen_pos()
@@ -1229,10 +1343,12 @@ class Graph:
                             equation.limit2Point2.calculate_screen_pos()
 
                             try:
-                                pygame.draw.aaline(self.parent_app.get_screen(), self.colour,
+                                pygame.draw.aaline(self.parent_app.get_screen(),
+                                                   self.colour,
                                                    equation.limit1Point1.screen_pos,
                                                    equation.limit1Point2.screen_pos)
-                                pygame.draw.aaline(self.parent_app.get_screen(), self.colour,
+                                pygame.draw.aaline(self.parent_app.get_screen(),
+                                                   self.colour,
                                                    equation.limit2Point1.screen_pos,
                                                    equation.limit2Point2.screen_pos)
                             except:
@@ -1241,19 +1357,31 @@ class Graph:
                                 self.parent_app.get_screen(), 'Area:,Trp: ' +
                                                               str(
                                                                   round(
-                                                                      integral(equation.yEquation, equation.limit1,
-                                                                               equation.limit2, rule='trapezium',
-                                                                               equation=equation), 5)) + ',Smp: ' +
+                                                                      integral(
+                                                                          equation.yEquation,
+                                                                          equation.limit1,
+                                                                          equation.limit2,
+                                                                          rule='trapezium',
+                                                                          equation=equation),
+                                                                      5)) + ',Smp: ' +
                                                               str(
                                                                   round(
-                                                                      integral(equation.yEquation, equation.limit1,
-                                                                               equation.limit2, rule='simpsons',
-                                                                               equation=equation), 5)),
-                                50, int(self.height / 2), (0, 0, 0), (255, 255, 255), 20)
+                                                                      integral(
+                                                                          equation.yEquation,
+                                                                          equation.limit1,
+                                                                          equation.limit2,
+                                                                          rule='simpsons',
+                                                                          equation=equation),
+                                                                      5)),
+                                50, int(self.height / 2), (0, 0, 0),
+                                (255, 255, 255), 20)
 
-                        if (slider.text in syntax_correction(equation.xEquation, False) or
-                                slider.text in syntax_correction(equation.yEquation, False) or
-                                slider.text in syntax_correction(equation.zEquation, False)):
+                        if (slider.text in syntax_correction(equation.xEquation,
+                                                             False) or
+                                slider.text in syntax_correction(
+                                    equation.yEquation, False) or
+                                slider.text in syntax_correction(
+                                    equation.zEquation, False)):
                             slider.draw_slider()
 
                     elif equation.type == 'cartesian':
@@ -1262,9 +1390,13 @@ class Graph:
 
                 if slider.move_pointer:
                     slider_active = True
-                    if slider.x <= pygame.mouse.get_pos()[0] <= slider.x + slider.width:
-                        slider.pointer.set_cor(pygame.mouse.get_pos()[0], slider.pointer.y, slider.pointer.z)
-                        slider.pointer.screen_pos = (pygame.mouse.get_pos()[0], slider.pointer.y)
+                    if slider.x <= pygame.mouse.get_pos()[
+                        0] <= slider.x + slider.width:
+                        slider.pointer.set_cor(pygame.mouse.get_pos()[0],
+                                               slider.pointer.y,
+                                               slider.pointer.z)
+                        slider.pointer.screen_pos = (
+                        pygame.mouse.get_pos()[0], slider.pointer.y)
                         slider.set_variable()
                         if 'limit' not in slider.text:
                             equation.calculatePoints()
@@ -1277,20 +1409,24 @@ class Graph:
             slider.draw_slider()
             if slider.move_pointer:
                 slider_active = True
-                if slider.x < pygame.mouse.get_pos()[0] < slider.x + slider.width:
-                    slider.pointer.set_cor(pygame.mouse.get_pos()[0], slider.pointer.y, slider.pointer.z)
-                    slider.pointer.screen_pos = (pygame.mouse.get_pos()[0], slider.pointer.y)
+                if slider.x < pygame.mouse.get_pos()[
+                    0] < slider.x + slider.width:
+                    slider.pointer.set_cor(pygame.mouse.get_pos()[0],
+                                           slider.pointer.y, slider.pointer.z)
+                    slider.pointer.screen_pos = (
+                    pygame.mouse.get_pos()[0], slider.pointer.y)
                     slider.set_variable()
 
         return slider_active
 
-    # Updates the windows for different objects and formats the user entries where required
+    # Updates the windows for different objects and formats the user entries
+    # where required
     def update_windows(self):
         for point in self.point_windows:
             try:
                 entry_formatter(point.coordinates_ent)
-                point.create_settings_window.update_idletasks()
-                point.create_settings_window.update()
+                point.root.update_idletasks()
+                point.root.update()
             except:
                 self.point_windows.remove(point)
                 point.window_open = False
@@ -1303,8 +1439,8 @@ class Graph:
                 entry_formatter(equation.start_value_ent)
                 entry_formatter(equation.end_value_ent)
 
-                equation.create_settings_window.update_idletasks()
-                equation.create_settings_window.update()
+                equation.root.update_idletasks()
+                equation.root.update()
             except:
                 self.parametric_equation_windows.remove(equation)
                 equation.window_open = False
@@ -1318,24 +1454,24 @@ class Graph:
                 entry_formatter(equation.end_y_ent)
                 entry_formatter(equation.start_z_ent)
                 entry_formatter(equation.end_z_ent)
-                equation.create_settings_window.update_idletasks()
-                equation.create_settings_window.update()
+                equation.root.update_idletasks()
+                equation.root.update()
             except:
                 self.cartesian_equations_windows.remove(equation)
                 equation.window_open = False
 
         for slider in self.slider_windows:
             try:
-                slider.create_settings_window.update_idletasks()
-                slider.create_settings_window.update()
+                slider.root.update_idletasks()
+                slider.root.update()
             except:
                 self.slider_windows.remove(slider)
                 slider.window_open = False
 
         for image in self.image_windows:
             try:
-                image.create_settings_window.update_idletasks()
-                image.create_settings_window.update()
+                image.root.update_idletasks()
+                image.root.update()
             except:
                 self.image_windows.remove(image)
                 image.window_open = False
@@ -1385,7 +1521,8 @@ class Graph:
         self.update_lines()  # Performs tasks associated with lines
         self.update_equations()  # Performs tasks associated with equations
 
-        if not (self.rotate_axes and self.axes_rotation_mouse_pos) and not self.translate_axes:
+        if not (
+                self.rotate_axes and self.axes_rotation_mouse_pos) and not self.translate_axes:
             slider_active = self.update_sliders()  # Performs tasks associated with sliders
             if not slider_active:
                 self.update_buttons()  # Performs tasks associated with buttons
@@ -1500,8 +1637,10 @@ class Graph:
     def create_point(self):
         valid = False
         # This calculates the coordinates of the point
-        a = (pygame.mouse.get_pos()[0] - self.origin.screen_pos[0]) / self.x_axes_sf
-        b = -(pygame.mouse.get_pos()[1] - self.origin.screen_pos[1]) / self.y_axes_sf
+        a = (pygame.mouse.get_pos()[0] - self.origin.screen_pos[
+            0]) / self.x_axes_sf
+        b = -(pygame.mouse.get_pos()[1] - self.origin.screen_pos[
+            1]) / self.y_axes_sf
         point = Point(self)  # Creates new point object
         # Determines which dimension the two coordinates correspond to and sets coordinates accordingly
         if self.y_rotation == 0.0 and self.x_rotation == 0.0:

@@ -1,5 +1,5 @@
 import os
-from utils import NAME, FONT_NAME, IMAGES
+from .utils import NAME, FONT_NAME, IMAGES
 
 commands = [
     'pyinstaller --onefile main.py',  # Creates executable in dist folder

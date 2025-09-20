@@ -1,16 +1,16 @@
-from point import Point
-from src.string_formatting import syntax_correction
-from utils import show_multiline_text
 import pygame
 from tkinter import Tk, Label, Entry, Button
 
+from .point import Point
+from .string_formatting import syntax_correction
+from .utils import show_multiline_text
 
 class Slider:  # Used for controlling the values of variables in the given range
     def __init__(self, text, variable, x, y, startValue, endValue, parentWindow,
                  parentObject, width, height, typeOfValues, default):
         # The object to which the variable belongs
         self.parentObject = parentObject
-        self.width = width  # Size of silder
+        self.width = width  # Size of slider
         self.height = height
         self.text = text  # Text of variable
         self.parentWindow = parentWindow
@@ -30,7 +30,7 @@ class Slider:  # Used for controlling the values of variables in the given range
         self.set_variable()
         self.windowOpen = False
 
-    def window(self):  # Sliderwindow
+    def window(self):  # Slider window
         self.root = Tk()
         self.windowOpen = True
         self.parentWindow.slider_windows.append(self)
@@ -41,7 +41,8 @@ class Slider:  # Used for controlling the values of variables in the given range
         self.root.attributes('-topmost', True)
         self.root.title('Slider Properties')
 
-        cord = str(pygame.mouse.get_pos()[0] + 10) + '+' + str(pygame.mouse.get_pos()[1] + 10)
+        cord = str(pygame.mouse.get_pos()[0] + 10) + '+' + str(
+            pygame.mouse.get_pos()[1] + 10)
         self.root.geometry('260x60+' + cord)  # 'width x height + xcor + ycor'
         # Label for the start value of the slider
         self.startlabel = Label(self.root, text='start=')
@@ -66,10 +67,12 @@ class Slider:  # Used for controlling the values of variables in the given range
         self.valueent.place(relx=0.45, rely=0.4)
 
         self.apply = Button(self.root, text='Apply',
-                            command=lambda: self.change_values(self.startent.get(),
-                                                               self.endent.get(),
-                                                               self.valueent.get()))
-        # This button will effectively create the point (if the inputs are valid)
+                            command=lambda: self.change_values(
+                                self.startent.get(),
+                                self.endent.get(),
+                                self.valueent.get()))
+        # This button will effectively create the point (if the inputs are
+        # valid)
         self.apply.place(relx=0.8, rely=0.1)
 
         self.close = Button(self.root, text='Close',
@@ -116,7 +119,8 @@ class Slider:  # Used for controlling the values of variables in the given range
 
     def set_variable(self):
         self.calculate_value()
-        exec('self.parentObject.' + self.variableName + '=' + str(self.variable))
+        exec(
+            'self.parentObject.' + self.variableName + '=' + str(self.variable))
         try:
             a = self.parentObject.a
             b = self.parentObject.b
@@ -132,7 +136,10 @@ class Slider:  # Used for controlling the values of variables in the given range
                 try:
                     self.parentObject.limit1Point1.set_cor(self.variable, 0, 0)
                     self.parentObject.limit1_point2.set_cor(self.variable,
-                                                            eval(syntax_correction(self.parentObject.y_equation)), 0)
+                                                            eval(
+                                                                syntax_correction(
+                                                                    self.parentObject.y_equation)),
+                                                            0)
                 except:
                     pass
 
@@ -143,20 +150,28 @@ class Slider:  # Used for controlling the values of variables in the given range
                 try:
                     self.parentObject.limit2Point1.set_cor(self.variable, 0, 0)
                     self.parentObject.limit2_point2.set_cor(self.variable,
-                                                            eval(syntax_correction(self.parentObject.y_equation)), 0)
+                                                            eval(
+                                                                syntax_correction(
+                                                                    self.parentObject.y_equation)),
+                                                            0)
                 except:
                     pass
 
     def draw_slider(self):
         # Displays the value of the variable
-        show_multiline_text(self.parentWindow.get_screen(), self.text + ' = ' + str(round(self.variable, 2)),
-                            self.pointer.x, self.pointer.y - 20, (255, 0, 0), (255, 255, 255), 20)
+        show_multiline_text(self.parentWindow.get_screen(),
+                            self.text + ' = ' + str(round(self.variable, 2)),
+                            self.pointer.x, self.pointer.y - 20, (255, 0, 0),
+                            (255, 255, 255), 20)
         # Draws the scroll line
-        pygame.draw.line(self.parentWindow.get_screen(), self.parentObject.colour,
+        pygame.draw.line(self.parentWindow.get_screen(),
+                         self.parentObject.colour,
                          (int(self.x), int(self.y + self.height * 0.75)),
-                         (int(self.x + self.width), int(self.y + self.height * 0.75)), 1)
-        # pygame.draw.rect(self.parent_window.getScreen(), (0,0,0), (self.x, self.y, self.width,
-        # self.height), 1) # Draws the border of the slider panel
-        # Draws pointer
+                         (int(self.x + self.width),
+                          int(self.y + self.height * 0.75)), 1)
+        # pygame.draw.rect(self.parent_window.getScreen(), (0,0,0), (self.x,
+        # self.y, self.width, self.height), 1) # Draws the border of the
+        # slider panel Draws pointer
         pygame.draw.circle(self.parentWindow.get_screen(), (0, 0, 200),
-                           (int(self.pointer.x), self.pointer.y), self.radius, 0)
+                           (int(self.pointer.x), self.pointer.y), self.radius,
+                           0)

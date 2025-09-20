@@ -1,17 +1,15 @@
-from image import Image
-from utils import random_colour, show_multiline_text, show_text
-from maths.matrices import *
 import pygame
 from math import sqrt
 from tkinter import Label, Button, Entry, Tk
 from random import randint
-from string_formatting import syntax_correction
+
+from .utils import random_colour, show_multiline_text, show_text
+from .maths.matrices import *
+from .string_formatting import syntax_correction
 
 
 class Point:  # Used to display individual points on the screen
     def __init__(self, parentWindow, createSlider=True):
-        from buttons import Buttons
-
         self.parent_window = parentWindow
         self.cor = ()
 
@@ -41,7 +39,7 @@ class Point:  # Used to display individual points on the screen
         self.t = 0
 
         if createSlider:
-            from slider import Slider
+            from .slider import Slider
             self.slider = Slider('t', 't', 5, 100, -10, 10, self.parent_window,
                                  self, 100, 50, '', 0)
         try:
@@ -86,8 +84,10 @@ class Point:  # Used to display individual points on the screen
             if i != 0:
                 # Draws line between adjacent points
                 if self.parent_window.line_for_trace:
-                    pygame.draw.aaline(self.parent_window.get_screen(), (0, 0, 0),
-                                       self.trace_points[i - 1].screen_pos, p.screen_pos)
+                    pygame.draw.aaline(self.parent_window.get_screen(),
+                                       (0, 0, 0),
+                                       self.trace_points[i - 1].screen_pos,
+                                       p.screen_pos)
                 if p.visible():
                     p.show(int(self.parent_window.radius * radiusRatio), False)
 
@@ -149,24 +149,30 @@ class Point:  # Used to display individual points on the screen
             if self.equation.type == 'cartesian':
                 if self.equation in self.parent_window.selected_equations:
                     pygame.draw.circle(self.parent_window.get_screen(),
-                                       (255, 0, 0), self.screen_pos, radius + 1, 0)
+                                       (255, 0, 0), self.screen_pos, radius + 1,
+                                       0)
 
                 pygame.draw.circle(self.parent_window.get_screen(),
-                                   self.equation.colour, self.screen_pos, radius, 0)
+                                   self.equation.colour, self.screen_pos,
+                                   radius, 0)
 
             if self.mouse_over_point():
                 show_text(self.parent_window.get_screen(), str(self.cor),
-                          self.screen_pos[0] + int(self.parent_window.radius * 1.2),
-                          self.screen_pos[1] + radius + 20, (255, 0, 0), (255, 255, 255), 20)
+                          self.screen_pos[0] + int(
+                              self.parent_window.radius * 1.2),
+                          self.screen_pos[1] + radius + 20, (255, 0, 0),
+                          (255, 255, 255), 20)
 
                 pygame.draw.circle(self.parent_window.get_screen(), self.colour,
                                    self.screen_pos, radius + 1, 0)
 
         elif self.equation is None:
-            text = '(' + str(self.x) + ', ' + str(self.y) + ', ' + str(self.z) + ')'
+            text = '(' + str(self.x) + ', ' + str(self.y) + ', ' + str(
+                self.z) + ')'
             if self.parent_window.show_coordinates:
                 show_text(self.parent_window.get_screen(), text,
-                          self.screen_pos[0] + radius + 20, self.screen_pos[1] + radius + 20,
+                          self.screen_pos[0] + radius + 20,
+                          self.screen_pos[1] + radius + 20,
                           (255, 0, 0), (255, 255, 255), 20)
 
             if self in self.parent_window.selected_points:
@@ -180,8 +186,10 @@ class Point:  # Used to display individual points on the screen
             pygame.draw.circle(self.parent_window.get_screen(), self.colour,
                                self.screen_pos, radius, 0)
             if showLabel and self.text != '':
-                show_multiline_text(self.parent_window.get_screen(), self.text, self.screen_pos[0],
-                                    self.screen_pos[1] - radius - 15, (255, 0, 0), (255, 255, 255), 25)
+                show_multiline_text(self.parent_window.get_screen(), self.text,
+                                    self.screen_pos[0],
+                                    self.screen_pos[1] - radius - 15,
+                                    (255, 0, 0), (255, 255, 255), 25)
 
     def mouse_over_point(self):
         if self.screen_pos is not None:
@@ -197,18 +205,20 @@ class Point:  # Used to display individual points on the screen
         self.window_open = False
 
     # Window for Point settings which has Delete, Cancel and Apply buttons
-    def window(self, x=None, y=None):  # Pointwindow
+    def window(self, x=None, y=None):  # Point window
         self.root = Tk()
         self.set_current_window()
         self.parent_window.point_windows.append(self)
         self.root.bind('<Enter>', lambda event: self.set_current_window())
         # self.settings_window.bind('<Leave>', lambda event: self.resetCurrentWindow())
         self.window_open = True
-        self.root.attributes('-topmost', True)  # Makes sure that the root opens on top of the Pygame root.
+        self.root.attributes('-topmost',
+                             True)  # Makes sure that the root opens on top of the Pygame root.
         self.root.title('Point Properties')
 
         if x is None:
-            x, y = (pygame.mouse.get_pos()[0] + 10, pygame.mouse.get_pos()[1] + 10)
+            x, y = (
+            pygame.mouse.get_pos()[0] + 10, pygame.mouse.get_pos()[1] + 10)
 
         # self.settings_window.geometry('260x80+'+str(x)+'+'+str(y)) # 'width x height + xcor + ycor'
         # User input for the x coordinate of the point
@@ -226,24 +236,33 @@ class Point:  # Used to display individual points on the screen
                 self.coordinates_ent.insert(0, str(self.pos_vec[0][0]))
 
             if 't' in (self.y2 or self.x2 or self.z2):
-                self.coordinates_ent.insert(len(self.coordinates_ent.get()), '|' + self.y2)
+                self.coordinates_ent.insert(len(self.coordinates_ent.get()),
+                                            '|' + self.y2)
             else:
-                self.coordinates_ent.insert(len(self.coordinates_ent.get()), ',' + str(self.pos_vec[1][0]))
+                self.coordinates_ent.insert(len(self.coordinates_ent.get()),
+                                            ',' + str(self.pos_vec[1][0]))
 
             if 't' in (self.y2 or self.x2 or self.z2):
-                self.coordinates_ent.insert(len(self.coordinates_ent.get()), '|' + self.z2)
+                self.coordinates_ent.insert(len(self.coordinates_ent.get()),
+                                            '|' + self.z2)
             else:
-                self.coordinates_ent.insert(len(self.coordinates_ent.get()), ',' + str(self.pos_vec[2][0]))
+                self.coordinates_ent.insert(len(self.coordinates_ent.get()),
+                                            ',' + str(self.pos_vec[2][0]))
 
-        apply = Button(self.root, text='Apply', command=lambda: self.cor_validation())
-        # This button will effectively create the point (if the user inputs are valid)
+        apply = Button(self.root, text='Apply',
+                       command=lambda: self.cor_validation())
+        # This button will effectively create the point (if the user inputs
+        # are valid)
         apply.grid(row=2, column=2)
 
-        applyAndNew = Button(self.root, text='Apply and New', command=lambda: self.cor_validation(True))
-        # This button will effectively create the point (if the user inputs are valid)
+        applyAndNew = Button(self.root, text='Apply and New',
+                             command=lambda: self.cor_validation(True))
+        # This button will effectively create the point (if the user inputs
+        # are valid)
         applyAndNew.grid(row=2, column=3, columnspan=2)
 
-        delete = Button(self.root, text='Delete', command=lambda: self.delete_point())
+        delete = Button(self.root, text='Delete',
+                        command=lambda: self.delete_point())
         delete.grid(row=2, column=5)
 
         Label(self.root, text='Label', width=5).grid(row=2, column=0)
@@ -308,7 +327,7 @@ class Point:  # Used to display individual points on the screen
 
             if newPoint:
                 p = Point(self.parent_window)
-                p.root(self.root.winfo_x(), self.root.winfo_y())
+                p.window(self.root.winfo_x(), self.root.winfo_y())
 
             self.text = self.point_label.get()
             self.close_window()

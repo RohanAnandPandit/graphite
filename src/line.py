@@ -1,5 +1,5 @@
 import pygame
-from utils import show_multiline_text
+from .utils import show_multiline_text
 
 
 # This class is used to represents individual lines created by the user
