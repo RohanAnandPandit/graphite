@@ -1,4 +1,4 @@
-# Graph3D - 3D Graphing Calculator
+# Graphite - 3D Graphing Calculator
 
 A powerful 3D graphing calculator application built with Python and Pygame, developed as an A-Level project. This interactive tool allows users to visualise mathematical functions and points in three dimensions, perform transformations, simulate Brownian motion, and explore complex mathematical concepts with an intuitive interface.
 
